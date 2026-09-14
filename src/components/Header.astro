@@ -1,0 +1,433 @@
+<header class="nl-header" data-northline-header>
+  <div class="nl-header-inner">
+
+    <a
+      class="nl-brand"
+      href="/"
+      aria-label="Northline Mounting Services home"
+      data-brand-home
+    >
+      <span class="nl-brand-name">Northline Mounting Services</span>
+
+      <span class="nl-logo-wrap" aria-hidden="true">
+        <img
+          class="nl-logo"
+          src="/northline-mounting-services-logo.svg"
+          alt=""
+        />
+      </span>
+    </a>
+
+    <a
+      class="sms-btn"
+      href="sms:+14704709331"
+      data-sms-estimate
+      aria-label="Send Photo for Estimate"
+    >
+      <span class="sms-text">
+        Send Photo for Estimate
+      </span>
+
+      <span class="sms-arrow" aria-hidden="true">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M4 12H19"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+          />
+          <path
+            d="M13 6L19 12L13 18"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </span>
+    </a>
+
+  </div>
+</header>
+
+<style>
+  .nl-header,
+  .nl-header *,
+  .nl-header *::before,
+  .nl-header *::after {
+    box-sizing: border-box;
+  }
+
+  .nl-header {
+    width: 100%;
+    background: #f2f2ef;
+    color: #747875;
+
+    font-family:
+      "Wix Madefor Text",
+      "Helvetica Neue",
+      Arial,
+      sans-serif;
+  }
+
+  .nl-header-inner {
+    width: 100%;
+    min-height: 216px;
+
+    padding:
+      0 clamp(32px, 4.9vw, 100px);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 48px;
+  }
+
+  /* =========================
+     BRAND
+  ========================== */
+
+  .nl-brand {
+    flex: 0 1 auto;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 18px;
+
+    min-width: 0;
+
+    color: #c7c9c7;
+    text-decoration: none;
+
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .nl-brand-name {
+    font-size: clamp(22px, 1.55vw, 31px);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.025em;
+
+    white-space: nowrap;
+  }
+
+  .nl-logo-wrap {
+    width: 52px;
+    height: 52px;
+
+    flex: 0 0 52px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    perspective: 500px;
+  }
+
+  .nl-logo {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    transform-origin: center;
+  }
+
+  .nl-logo.is-flipping {
+    animation: nl-logo-flip 1100ms cubic-bezier(.45, 0, .25, 1);
+  }
+
+  @keyframes nl-logo-flip {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    40% {
+      transform: rotate(180deg);
+    }
+
+    60% {
+      transform: rotate(180deg);
+    }
+
+    100% {
+      transform: rotate(0deg);
+    }
+  }
+
+  .nl-brand:focus-visible {
+    outline: 1px solid #536b64;
+    outline-offset: 6px;
+  }
+
+  /* =========================
+     SMS CTA
+  ========================== */
+
+  .sms-btn {
+    position: relative;
+
+    flex: 0 1 360px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    width: min(360px, 100%);
+    min-height: 72px;
+
+    padding: 0 4px 0 0;
+
+    border: 0;
+    background: transparent;
+
+    color: #747875;
+    text-decoration: none;
+
+    font-family:
+      "Wix Madefor Text",
+      Arial,
+      sans-serif;
+
+    font-size: clamp(17px, 1.25vw, 25px);
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+
+    cursor: pointer;
+
+    -webkit-tap-highlight-color: transparent;
+
+    transition:
+      color 180ms ease,
+      padding-left 220ms cubic-bezier(.2,.8,.2,1);
+  }
+
+  .sms-btn::before {
+    content: "";
+    position: absolute;
+
+    left: 0;
+    top: 50%;
+
+    width: 2px;
+    height: 0;
+
+    background: #536b64;
+
+    transform: translateY(-50%);
+
+    transition:
+      height 220ms cubic-bezier(.2,.8,.2,1);
+  }
+
+  .sms-btn::after {
+    content: "";
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 1px;
+
+    background: #dcddd8;
+
+    transform: scaleX(0);
+    transform-origin: left center;
+
+    transition:
+      transform 320ms cubic-bezier(.2,.8,.2,1);
+  }
+
+  .sms-text {
+    flex: 1 1 auto;
+    min-width: 0;
+
+    text-align: left;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .sms-arrow {
+    flex: 0 0 auto;
+
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #747875;
+
+    transform: translateX(0);
+
+    transition:
+      transform 220ms cubic-bezier(.2,.8,.2,1),
+      color 180ms ease;
+  }
+
+  .sms-arrow svg {
+    display: block;
+    width: 24px;
+    height: 24px;
+    overflow: visible;
+  }
+
+  .sms-btn:hover {
+    color: #202321;
+    padding-left: 14px;
+  }
+
+  .sms-btn:hover::before {
+    height: 30px;
+  }
+
+  .sms-btn:hover::after {
+    transform: scaleX(1);
+  }
+
+  .sms-btn:hover .sms-arrow {
+    color: #536b64;
+    transform: translateX(5px);
+  }
+
+  .sms-btn:focus-visible {
+    outline: 1px solid #536b64;
+    outline-offset: 4px;
+  }
+
+  /* =========================
+     MOBILE
+  ========================== */
+
+  @media (max-width: 700px) {
+    .nl-header-inner {
+      min-height: 104px;
+
+      padding:
+        0 20px;
+
+      gap: 20px;
+    }
+
+    .nl-brand-name {
+      display: none;
+    }
+
+    .nl-brand {
+      flex: 0 0 auto;
+    }
+
+    .nl-logo-wrap {
+      width: 44px;
+      height: 44px;
+      flex-basis: 44px;
+    }
+
+    .sms-btn {
+      flex: 0 1 auto;
+
+      width: auto;
+      max-width: calc(100vw - 84px);
+
+      min-height: 64px;
+
+      font-size: 17px;
+    }
+
+    .sms-btn:hover {
+      padding-left: 0;
+    }
+
+    .sms-btn:hover::before {
+      height: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nl-logo.is-flipping {
+      animation: none;
+    }
+
+    .sms-btn,
+    .sms-btn::before,
+    .sms-btn::after,
+    .sms-arrow {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const header = document.querySelector("[data-northline-header]");
+
+  if (header) {
+    const brand = header.querySelector("[data-brand-home]");
+    const logo = header.querySelector(".nl-logo");
+    const sms = header.querySelector("[data-sms-estimate]");
+
+    brand?.addEventListener("click", (event) => {
+      if (
+        event.button !== 0 ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.shiftKey ||
+        event.altKey
+      ) {
+        return;
+      }
+
+      const reducedMotion =
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      const alreadyHome =
+        window.location.pathname === "/" ||
+        window.location.pathname === "/index.html";
+
+      if (reducedMotion) {
+        if (alreadyHome) {
+          event.preventDefault();
+        }
+        return;
+      }
+
+      event.preventDefault();
+
+      if (!logo) {
+        if (!alreadyHome) window.location.href = "/";
+        return;
+      }
+
+      logo.classList.remove("is-flipping");
+      void logo.offsetWidth;
+      logo.classList.add("is-flipping");
+
+      if (!alreadyHome) {
+        window.setTimeout(() => {
+          window.location.href = "/";
+        }, 1080);
+      }
+    });
+
+    sms?.addEventListener("click", () => {
+      window.dataLayer = window.dataLayer || [];
+
+      window.dataLayer.push({
+        event: "get_quote_sms_click",
+        placement: "header",
+        source_page: window.location.pathname,
+      });
+    });
+  }
+</script>

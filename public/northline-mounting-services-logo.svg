@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg data-bbox="236 279 781 695" aria-label="ATL symmetrical icon gray" viewBox="0 0 1254 1254" xmlns="http://www.w3.org/2000/svg" style="background:0 0" color="#c2c2c2" overflow="visible" cursor="pointer" data-type="ugc">
+    <g>
+        <path d="m368 607 153 2 106-177 105 177 153 1-199-331-132 8Z" style="transform-box:fill-box;transition:transform 220ms cubic-bezier(.2,.8,.2,1),opacity 220ms ease" fill="currentColor" transform-origin="center"/>
+        <path d="m236 841 79 133 251-1 60-84 60 84 251 1 80-124-110-186-150 4 111 193-56 98-186-288-184 288-57-98 108-196-156 2Z" style="transform-box:fill-box;transition:transform 220ms cubic-bezier(.2,.8,.2,1),opacity 220ms ease" fill="currentColor" transform-origin="center"/>
+        <path d="m442 957 11 17 115-1 58-84 61 85h112l12-14-184-290Z" style="transform-box:fill-box;transition:transform 220ms cubic-bezier(.2,.8,.2,1),opacity 220ms ease" fill="currentColor" transform-origin="center"/>
+    </g>
+</svg>
