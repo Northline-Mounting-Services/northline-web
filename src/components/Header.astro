@@ -76,7 +76,7 @@
 
   .nl-header-inner {
     width: 100%;
-    min-height: 216px;
+    min-height: 150px;
 
     padding:
       0 clamp(32px, 4.9vw, 100px);
@@ -313,7 +313,7 @@
 
   @media (max-width: 700px) {
     .nl-header-inner {
-      min-height: 104px;
+      min-height: 72px;
 
       padding:
         0 20px;
@@ -367,6 +367,26 @@
       transition: none;
     }
   }
+
+
+  
+  /* Vertical position of header content */
+  .nl-brand,
+  .sms-btn {
+    transform: translateY(8px);
+  }
+
+/* Final header alignment */
+  .nl-header {
+    border-bottom: 1.5px solid #DCDDD8;
+  }
+
+  @media (max-width: 700px) {
+    .nl-brand {
+      transform: translateX(8px);
+    }
+  }
+
 </style>
 
 <script>
