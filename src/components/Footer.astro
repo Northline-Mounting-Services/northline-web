@@ -1,0 +1,1745 @@
+---
+const year = new Date().getFullYear();
+
+const services = [
+    ["TV Mounting", "/tv-mounting"],
+    ["Samsung Frame", "/tv-mounting/samsung-frame"],
+    ["Above Fireplace", "/tv-mounting/above-fireplace"],
+    ["Large TV", "/tv-mounting/large-tv"],
+    ["Wire Concealment", "/tv-mounting/wire-concealment"],
+];
+
+const plan = [
+    ["Calculate Price", "/calculator"],
+    ["AI Photo Quote", "/ai-tv-quote"],
+    ["Book a Time", "/book"],
+];
+
+const support = [
+    ["FAQ", "/faq"],
+    ["Installation Guarantee", "/installation-guarantee"],
+];
+
+const policies = [
+    ["Terms", "/terms"],
+    ["Privacy", "/privacy"],
+    ["Cookies", "/cookies"],
+    ["Accessibility", "/accessibility"],
+];
+
+const serviceRegions = [
+    {
+        label: "North Fulton",
+        cities: [
+            ["Alpharetta", "/service-area/alpharetta-ga"],
+            ["Johns Creek", "/service-area/johns-creek-ga"],
+            ["Milton", "/service-area/milton-ga"],
+            ["Roswell", "/service-area/roswell-ga"],
+        ],
+    },
+    {
+        label: "Forsyth & North",
+        cities: [
+            ["Cumming", "/service-area/cumming-ga"],
+            ["Dawsonville", "/service-area/dawsonville-ga"],
+            ["Ball Ground", "/service-area/ball-ground-ga"],
+            ["Dahlonega", "/service-area/dahlonega-ga"],
+            ["Jasper", "/service-area/jasper-ga"],
+        ],
+    },
+    {
+        label: "Gwinnett West / Central",
+        cities: [
+            ["Berkeley Lake", "/service-area/berkeley-lake-ga"],
+            ["Buford", "/service-area/buford-ga"],
+            ["Duluth", "/service-area/duluth-ga"],
+            ["Norcross", "/service-area/norcross-ga"],
+            ["Peachtree Corners", "/service-area/peachtree-corners-ga"],
+            ["Sugar Hill", "/service-area/sugar-hill-ga"],
+            ["Suwanee", "/service-area/suwanee-ga"],
+        ],
+    },
+    {
+        label: "Gwinnett East",
+        cities: [
+            ["Dacula", "/service-area/dacula-ga"],
+            ["Grayson", "/service-area/grayson-ga"],
+            ["Lawrenceville", "/service-area/lawrenceville-ga"],
+            ["Lilburn", "/service-area/lilburn-ga"],
+            ["Snellville", "/service-area/snellville-ga"],
+            ["Winder", "/service-area/winder-ga"],
+        ],
+    },
+    {
+        label: "North Atlanta",
+        cities: [
+            ["Brookhaven", "/service-area/brookhaven-ga"],
+            ["Chamblee", "/service-area/chamblee-ga"],
+            ["Doraville", "/service-area/doraville-ga"],
+            ["Dunwoody", "/service-area/dunwoody-ga"],
+            ["Sandy Springs", "/service-area/sandy-springs-ga"],
+        ],
+    },
+    {
+        label: "Northwest",
+        cities: [
+            ["Acworth", "/service-area/acworth-ga"],
+            ["Canton", "/service-area/canton-ga"],
+            ["Holly Springs", "/service-area/holly-springs-ga"],
+            ["Kennesaw", "/service-area/kennesaw-ga"],
+            ["Marietta", "/service-area/marietta-ga"],
+            ["Smyrna", "/service-area/smyrna-ga"],
+            ["Vinings", "/service-area/vinings-ga"],
+            ["Woodstock", "/service-area/woodstock-ga"],
+        ],
+    },
+    {
+        label: "Northeast",
+        cities: [
+            ["Braselton", "/service-area/braselton-ga"],
+            ["Flowery Branch", "/service-area/flowery-branch-ga"],
+            ["Gainesville", "/service-area/gainesville-ga"],
+            ["Hoschton", "/service-area/hoschton-ga"],
+            ["Oakwood", "/service-area/oakwood-ga"],
+        ],
+    },
+];
+
+const hours = [
+    { day: "MON", value: "8 AM–5 PM", open: true },
+    { day: "TUE", value: "8 AM–5 PM", open: true },
+    { day: "WED", value: "8 AM–5 PM", open: true },
+    { day: "THU", value: "8 AM–5 PM", open: true },
+    { day: "FRI", value: "8 AM–5 PM", open: true },
+    { day: "SAT", value: "8 AM–5 PM", open: true },
+    { day: "SUN", value: "CLOSED", open: false },
+];
+---
+
+
+<div class="northline-footer" data-northline-footer>
+    <footer class="nl-root">
+
+        <!-- EXPANDED FULL SITE -->
+        <div class="nl-panel" id="nl-full-panel" aria-hidden="true">
+            <div class="nl-panel-inner" id="nl-panel-inner" inert>
+                <div class="nl-panel-content">
+
+                    <!-- SYSTEM -->
+                    <div class="nl-system-head nl-stage nl-stage-1">
+                        <div class="nl-system-name">
+                            <span class="nl-kicker">SYSTEM</span>
+                            <span class="nl-title">NORTHLINE MOUNTING SERVICES</span>
+                            <span class="nl-subtitle">FULL OPERATIONAL RECORD</span>
+                        </div>
+
+                        <div class="nl-meta">
+                            <div class="nl-meta-cell">
+                                <span class="nl-meta-label">SERVICE REGION</span>
+                                <span class="nl-meta-value">NORTH ATLANTA</span>
+                            </div>
+                            <div class="nl-meta-cell">
+                                <span class="nl-meta-label">SITE MAP</span>
+                                <span class="nl-meta-value">PUBLIC SITE</span>
+                            </div>
+                            <div class="nl-meta-cell">
+                                <span class="nl-meta-label">COVERAGE</span>
+                                <span class="nl-meta-value">40 AREAS</span>
+                            </div>
+                            <div class="nl-meta-cell">
+                                <span class="nl-meta-label">TIME ZONE</span>
+                                <span class="nl-meta-value">ET</span>
+                            </div>
+                            <div class="nl-meta-cell">
+                                <span class="nl-meta-label">BOOKING</span>
+                                <span class="nl-meta-value">ONLINE</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="nl-divider"></div>
+
+                    <!-- 01 / 02 / 03 -->
+                    <div class="nl-row-primary nl-stage nl-stage-2">
+
+                        <section class="nl-module">
+                            <div class="nl-module-head">
+                                <span class="nl-number">01</span>
+                                <span>SERVICE SYSTEM</span>
+                            </div>
+                            <nav class="nl-link-list" aria-label="Service system">
+                                {services.map(([label, href]) => (
+                                    <a class="nl-link" href={href}>
+                                        <span>{label}</span>
+                                        <span class="nl-link-arrow" aria-hidden="true">↗</span>
+                                    </a>
+                                ))}
+                            </nav>
+                        </section>
+
+                        <section class="nl-module">
+                            <div class="nl-module-head">
+                                <span class="nl-number">02</span>
+                                <span>COVERAGE</span>
+                            </div>
+
+                            <nav aria-label="Service areas">
+                                <div class="nl-link-list nl-coverage-main">
+                                    <a class="nl-link" href="/service-area">
+                                        <span>Service Areas</span>
+                                        <span class="nl-link-arrow" aria-hidden="true">↗</span>
+                                    </a>
+                                </div>
+
+                                <div class="nl-coverage-grid">
+                                    {serviceRegions.map((region) => (
+                                        <div class="nl-coverage-group">
+                                            <span class="nl-coverage-label">{region.label}</span>
+                                            <div class="nl-coverage-cities">
+                                                {region.cities.map(([name, href]) => (
+                                                    <a class="nl-coverage-city" href={href}>{name}</a>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </nav>
+                        </section>
+
+                        <section class="nl-module">
+                            <div class="nl-module-head">
+                                <span class="nl-number">03</span>
+                                <span>PLAN &amp; BOOK</span>
+                            </div>
+                            <nav class="nl-link-list" aria-label="Plan and book">
+                                {plan.map(([label, href]) => (
+                                    <a class="nl-link" href={href}>
+                                        <span>{label}</span>
+                                        <span class="nl-link-arrow" aria-hidden="true">↗</span>
+                                    </a>
+                                ))}
+                            </nav>
+                        </section>
+
+                    </div>
+
+                    <div class="nl-divider"></div>
+
+                    <!-- 04 / 05 / 06 -->
+                    <div class="nl-row-secondary nl-stage nl-stage-3">
+
+                        <section class="nl-module nl-hours-module">
+                            <div class="nl-module-head">
+                                <span class="nl-number">04</span>
+                                <span>SERVICE HOURS</span>
+                            </div>
+
+                            <div class="nl-hours-axis">
+                                <span></span>
+                                <div class="nl-hours-axis-times">
+                                    <span>08</span>
+                                    <span>11</span>
+                                    <span>14</span>
+                                    <span>17</span>
+                                </div>
+                                <span></span>
+                            </div>
+
+                            <div class="nl-hours">
+                                {hours.map((item) => (
+                                    <div class:list={["nl-hours-row", !item.open && "is-closed"]}>
+                                        <span class="nl-day">{item.day}</span>
+                                        <div class="nl-hours-track" aria-hidden="true">
+                                            {item.open ? (
+                                                <>
+                                                    <span></span>
+                                                    <span></span>
+                                                    <span></span>
+                                                </>
+                                            ) : (
+                                                <span class="nl-closed-track"></span>
+                                            )}
+                                        </div>
+                                        <span class="nl-hours-value">{item.value}</span>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div class="nl-hours-note">
+                                BOOKING WINDOWS · <strong>8–11 · 11–2 · 2–5</strong><br />
+                                MON–SAT · EASTERN TIME
+                            </div>
+                        </section>
+
+                        <section class="nl-module">
+                            <div class="nl-module-head">
+                                <span class="nl-number">05</span>
+                                <span>CONTACT CHANNELS</span>
+                            </div>
+
+                            <div class="nl-contact">
+                                <div class="nl-contact-item">
+                                    <span class="nl-small-label">VOICE / SMS</span>
+                                    <a class="nl-phone" href="tel:+14704709331">(470) 470-9331</a>
+                                </div>
+
+                                <div class="nl-contact-item">
+                                    <span class="nl-small-label">EMAIL</span>
+                                    <a class="nl-email" href="mailto:info@atltvmount.com">info@atltvmount.com</a>
+                                </div>
+
+                                <a class="nl-book" href="/book">
+                                    <span>BOOK A TIME</span>
+                                    <span aria-hidden="true">↗</span>
+                                </a>
+
+                                <a class="nl-link" href="/contact-us">
+                                    <span>Contact</span>
+                                    <span class="nl-link-arrow" aria-hidden="true">↗</span>
+                                </a>
+                            </div>
+                        </section>
+
+                        <section class="nl-module">
+                            <div class="nl-module-head">
+                                <span class="nl-number">06</span>
+                                <span>SUPPORT</span>
+                            </div>
+                            <nav class="nl-link-list" aria-label="Support">
+                                {support.map(([label, href]) => (
+                                    <a class="nl-link" href={href}>
+                                        <span>{label}</span>
+                                        <span class="nl-link-arrow" aria-hidden="true">↗</span>
+                                    </a>
+                                ))}
+                            </nav>
+                        </section>
+
+                    </div>
+
+                    <div class="nl-divider"></div>
+
+                    <!-- 07 / 08 / AGENT -->
+                    <div class="nl-row-tertiary nl-stage nl-stage-4">
+
+                        <section class="nl-module">
+                            <div class="nl-module-head">
+                                <span class="nl-number">07</span>
+                                <span>POLICIES</span>
+                            </div>
+                            <nav class="nl-link-list" aria-label="Policies">
+                                {policies.map(([label, href]) => (
+                                    <a class="nl-link" href={href}>
+                                        <span>{label}</span>
+                                        <span class="nl-link-arrow" aria-hidden="true">↗</span>
+                                    </a>
+                                ))}
+                            </nav>
+                        </section>
+
+                        <section class="nl-module">
+                            <div class="nl-module-head">
+                                <span class="nl-number">08</span>
+                                <span>BUSINESS RECORD</span>
+                            </div>
+
+                            <div class="nl-record">
+                                <div class="nl-record-row">
+                                    <span class="nl-record-key">ENTITY</span>
+                                    <span class="nl-record-value">Northline Mounting Services LLC.</span>
+                                </div>
+                                <div class="nl-record-row">
+                                    <span class="nl-record-key">BRAND</span>
+                                    <span class="nl-record-value">ATL TV Mount</span>
+                                </div>
+                                <div class="nl-record-row">
+                                    <span class="nl-record-key">DOMAIN</span>
+                                    <a class="nl-record-value nl-record-link" href="/">atltvmount.com</a>
+                                </div>
+
+                                <div class="nl-record-divider"></div>
+
+                                <a class="nl-link" href="/about">
+                                    <span>About</span>
+                                    <span class="nl-link-arrow" aria-hidden="true">↗</span>
+                                </a>
+                                <a class="nl-link" href="/">
+                                    <span>Home</span>
+                                    <span class="nl-link-arrow" aria-hidden="true">↗</span>
+                                </a>
+                            </div>
+                        </section>
+
+                        <section class="nl-agent">
+                            <span class="nl-small-label">AGENT INTERFACE</span>
+                            <a class="nl-agent-link" href="/agent">
+                                <span>/agent</span>
+                                <span aria-hidden="true">↗</span>
+                            </a>
+                            <span class="nl-agent-description">
+                                ACCESS POINT FOR AI AGENTS<br />AND AUTOMATED CLIENTS.
+                            </span>
+                        </section>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTROL RAIL -->
+        <div class="nl-rail">
+            <div class="nl-legal-zone">
+                <div class="nl-copy-main">
+                    <span class="nl-copyright">© {year} ATL TV MOUNT</span>
+                    <button
+                        class="nl-legal-toggle"
+                        type="button"
+                        aria-expanded="false"
+                        aria-controls="nl-legal-detail"
+                        aria-label="Show legal business name"
+                    >
+                        <span class="nl-caret" aria-hidden="true">▼</span>
+                    </button>
+                </div>
+
+                <div class="nl-legal-detail" id="nl-legal-detail" aria-hidden="true">
+                    <div class="nl-legal-detail-inner">
+                        <div class="nl-legal-text">
+                            NORTHLINE MOUNTING SERVICES LLC.<br />
+                            ALL RIGHTS RESERVED.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nl-full-zone">
+                <button
+                    class="nl-full-toggle"
+                    type="button"
+                    aria-expanded="false"
+                    aria-controls="nl-full-panel"
+                >
+                    <span class="nl-full-label">FULL SITE</span>
+                    <span class="nl-full-glyph" aria-hidden="true">↗</span>
+                </button>
+            </div>
+        </div>
+
+    </footer>
+</div>
+
+<style>
+
+
+    .northline-footer {
+        display: block;
+        width: 100%;
+        height: auto;
+
+        --paper: #F2F2EF;
+        --paper-2: #EAEAE6;
+
+        --ink: #202321;
+        --muted: #747875;
+        --rule: #DCDDD8;
+
+        --machine: #222623;
+        --machine-2: #2C312E;
+        --machine-rule: #363B37;
+
+        --light: #F2F2EF;
+        --machine-text: #DDE0DB;
+        --machine-muted: #8D958F;
+
+        --accent: #A8BDB4;
+        --accent-main: #536B64;
+
+        font-family:
+            "Wix Madefor Text",
+            "Helvetica Neue",
+            Arial,
+            sans-serif;
+
+        color: var(--ink);
+        box-sizing: border-box;
+    }
+
+
+    .northline-footer *,
+    .northline-footer *::before,
+    .northline-footer *::after {
+        box-sizing: border-box;
+    }
+
+
+    .northline-footer a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+
+    .northline-footer button {
+        font: inherit;
+    }
+
+
+    .nl-root {
+        width: 100%;
+        background: var(--paper);
+        border-top: 1px solid var(--rule);
+    }
+
+
+    /* =========================
+       EXPANDED MACHINE PANEL
+    ========================== */
+
+    .nl-panel {
+        display: grid;
+        grid-template-rows: 0fr;
+
+        background: var(--machine);
+        color: var(--light);
+
+        transition:
+            grid-template-rows
+            420ms cubic-bezier(.2,.7,.2,1);
+    }
+
+
+    .nl-panel.is-open {
+        grid-template-rows: 1fr;
+    }
+
+
+    .nl-panel-inner {
+        min-height: 0;
+        overflow: hidden;
+    }
+
+
+    .nl-panel-content {
+        max-width: 1560px;
+        margin: 0 auto;
+
+        padding:
+            clamp(28px, 3vw, 44px)
+            clamp(24px, 4vw, 56px)
+            36px;
+
+        display: flex;
+        flex-direction: column;
+        gap: 28px;
+    }
+
+
+    .nl-stage {
+        opacity: 0;
+        transform: translateY(8px);
+
+        transition:
+            opacity 220ms linear,
+            transform 320ms cubic-bezier(.2,.7,.2,1);
+    }
+
+
+    .nl-panel.is-open .nl-stage {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+
+    .nl-panel.is-open .nl-stage-1 {
+        transition-delay: 40ms;
+    }
+
+    .nl-panel.is-open .nl-stage-2 {
+        transition-delay: 120ms;
+    }
+
+    .nl-panel.is-open .nl-stage-3 {
+        transition-delay: 200ms;
+    }
+
+    .nl-panel.is-open .nl-stage-4 {
+        transition-delay: 280ms;
+    }
+
+
+    /* =========================
+       SYSTEM HEADER
+    ========================== */
+
+    .nl-system-head {
+        display: grid;
+        grid-template-columns:
+            minmax(260px, 1fr)
+            minmax(520px, 1.6fr);
+
+        gap: 32px 50px;
+        align-items: end;
+    }
+
+
+    .nl-system-name {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+
+    .nl-kicker,
+    .nl-meta-label,
+    .nl-number,
+    .nl-small-label {
+        font-family:
+            ui-monospace,
+            SFMono-Regular,
+            Menlo,
+            Monaco,
+            Consolas,
+            monospace;
+    }
+
+
+    .nl-kicker {
+        font-size: 9px;
+        letter-spacing: .22em;
+        color: var(--machine-muted);
+    }
+
+
+    .nl-title {
+        max-width: 520px;
+
+        font-size: clamp(22px, 2vw, 29px);
+        font-weight: 500;
+        line-height: 1.05;
+        letter-spacing: -.015em;
+    }
+
+
+    .nl-subtitle {
+        font-family:
+            ui-monospace,
+            SFMono-Regular,
+            Menlo,
+            monospace;
+
+        font-size: 10px;
+        letter-spacing: .14em;
+        color: var(--accent);
+    }
+
+
+    .nl-meta {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(105px, 1fr));
+
+        gap: 1px;
+
+        background: var(--machine-rule);
+        border: 1px solid var(--machine-rule);
+    }
+
+
+    .nl-meta-cell {
+        min-width: 0;
+        padding: 11px 12px;
+
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+
+        background: var(--machine);
+    }
+
+
+    .nl-meta-label {
+        font-size: 8px;
+        letter-spacing: .17em;
+        color: var(--machine-muted);
+    }
+
+
+    .nl-meta-value {
+        font-family:
+            ui-monospace,
+            SFMono-Regular,
+            Menlo,
+            monospace;
+
+        font-size: 11px;
+        letter-spacing: .05em;
+
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+
+    .nl-divider {
+        height: 1px;
+        background: var(--machine-rule);
+    }
+
+
+    /* =========================
+       MODULES
+    ========================== */
+
+    .nl-row-primary {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+
+        gap: 32px 48px;
+    }
+
+
+    .nl-row-secondary,
+    .nl-row-tertiary {
+        display: grid;
+        grid-template-columns:
+            minmax(340px, 1.55fr)
+            minmax(220px, 1fr)
+            minmax(220px, 1fr);
+
+        gap: 32px 48px;
+    }
+
+
+    .nl-module {
+        min-width: 0;
+    }
+
+
+    .nl-module-head {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+
+        border-bottom: 1px solid var(--machine-rule);
+
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: .16em;
+    }
+
+
+    .nl-number {
+        flex: 0 0 auto;
+
+        font-size: 10px;
+        font-weight: 400;
+        letter-spacing: .1em;
+
+        color: var(--accent);
+    }
+
+
+    .nl-link-list {
+        display: flex;
+        flex-direction: column;
+    }
+
+
+    .nl-link {
+        min-height: 30px;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+
+        padding: 5px 0;
+
+        color: var(--machine-text);
+
+        font-size: 14px;
+        line-height: 1.35;
+
+        transition:
+            color 140ms linear,
+            padding-left 160ms cubic-bezier(.2,.7,.2,1);
+    }
+
+
+    .nl-link-arrow {
+        opacity: 0;
+        color: var(--accent);
+
+        font-family:
+            ui-monospace,
+            SFMono-Regular,
+            Menlo,
+            monospace;
+
+        font-size: 11px;
+
+        transform: translateX(-4px);
+
+        transition:
+            opacity 140ms linear,
+            transform 160ms cubic-bezier(.2,.7,.2,1);
+    }
+
+
+    .nl-link:hover {
+        color: #FFFFFF;
+        padding-left: 5px;
+    }
+
+
+    .nl-link:hover .nl-link-arrow {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+
+    .nl-link:focus-visible,
+    .nl-agent-link:focus-visible,
+    .nl-book:focus-visible,
+    .nl-rail button:focus-visible {
+        outline: 1px solid var(--accent);
+        outline-offset: 3px;
+    }
+
+
+    /* =========================
+       HOURS
+    ========================== */
+
+    .nl-hours-axis {
+        display: grid;
+        grid-template-columns: 46px 1fr 90px;
+        gap: 10px;
+
+        margin-bottom: 6px;
+    }
+
+
+    .nl-hours-axis-times {
+        display: flex;
+        justify-content: space-between;
+
+        font-family:
+            ui-monospace,
+            SFMono-Regular,
+            Menlo,
+            monospace;
+
+        font-size: 8px;
+        letter-spacing: .1em;
+
+        color: var(--machine-muted);
+    }
+
+
+    .nl-hours {
+        border-top: 1px solid var(--machine-rule);
+        border-bottom: 1px solid var(--machine-rule);
+    }
+
+
+    .nl-hours-row {
+        display: grid;
+        grid-template-columns: 46px 1fr 90px;
+
+        gap: 10px;
+        align-items: center;
+
+        min-height: 33px;
+
+        border-bottom: 1px solid var(--machine-rule);
+    }
+
+
+    .nl-hours-row:last-child {
+        border-bottom: 0;
+    }
+
+
+    .nl-day,
+    .nl-hours-value {
+        font-family:
+            ui-monospace,
+            SFMono-Regular,
+            Menlo,
+            monospace;
+
+        font-size: 10px;
+        letter-spacing: .07em;
+    }
+
+
+    .nl-day {
+        color: var(--light);
+    }
+
+
+    .nl-hours-value {
+        color: var(--machine-muted);
+        text-align: right;
+    }
+
+
+    .nl-hours-track {
+        min-width: 0;
+        height: 9px;
+
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+
+        gap: 2px;
+    }
+
+
+    .nl-hours-track > span:not(.nl-closed-track) {
+        display: block;
+
+        background:
+            repeating-linear-gradient(
+                90deg,
+                #56675F 0 5px,
+                #425049 5px 10px
+            );
+
+        border-top: 1px solid #667A70;
+        border-bottom: 1px solid #667A70;
+    }
+
+
+    .nl-closed-track {
+        grid-column: 1 / -1;
+
+        display: block;
+
+        height: 1px;
+
+        align-self: center;
+
+        background: var(--machine-rule);
+    }
+
+
+    .nl-hours-row.is-closed .nl-day,
+    .nl-hours-row.is-closed .nl-hours-value {
+        color: #717A74;
+    }
+
+
+    .nl-hours-note {
+        margin-top: 10px;
+
+        font-family:
+            ui-monospace,
+            SFMono-Regular,
+            Menlo,
+            monospace;
+
+        font-size: 9px;
+        letter-spacing: .09em;
+        line-height: 1.7;
+
+        color: var(--machine-muted);
+    }
+
+
+    .nl-hours-note strong {
+        color: var(--accent);
+        font-weight: 400;
+    }
+
+
+    /* =========================
+       CONTACT
+    ========================== */
+
+    .nl-contact {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+
+    .nl-contact-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+
+    .nl-small-label {
+        font-size: 8px;
+        letter-spacing: .18em;
+        color: var(--machine-muted);
+    }
+
+
+    .nl-phone {
+        font-size: 20px;
+        font-weight: 500;
+        color: var(--light);
+    }
+
+
+    .nl-email {
+        font-size: 15px;
+        color: var(--light);
+        overflow-wrap: anywhere;
+    }
+
+
+    .nl-phone:hover,
+    .nl-email:hover {
+        color: var(--accent);
+    }
+
+
+    .nl-book {
+        min-height: 48px;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+
+        margin-top: 2px;
+        padding: 0 14px;
+
+        border: 1px solid var(--accent);
+
+        color: var(--light);
+
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: .05em;
+
+        transition:
+            background 160ms linear,
+            color 160ms linear;
+    }
+
+
+    .nl-book:hover {
+        background: var(--accent);
+        color: var(--machine);
+    }
+
+
+    /* =========================
+       BUSINESS RECORD
+    ========================== */
+
+    .nl-record {
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+    }
+
+
+    .nl-record-row {
+        display: grid;
+        grid-template-columns: 70px minmax(0, 1fr);
+
+        gap: 10px;
+
+        font-size: 14px;
+    }
+
+
+    .nl-record-key {
+        padding-top: 3px;
+
+        font-family:
+            ui-monospace,
+            SFMono-Regular,
+            Menlo,
+            monospace;
+
+        font-size: 8px;
+        letter-spacing: .15em;
+
+        color: var(--machine-muted);
+    }
+
+
+    .nl-record-value {
+        color: var(--light);
+    }
+
+
+    .nl-record-link:hover {
+        color: var(--accent);
+    }
+
+
+    .nl-record-divider {
+        height: 1px;
+        margin: 5px 0;
+
+        background: var(--machine-rule);
+    }
+
+
+    /* =========================
+       AGENT
+    ========================== */
+
+    .nl-agent {
+        align-self: start;
+
+        padding: 16px;
+
+        border: 1px solid var(--machine-rule);
+
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+
+    .nl-agent-link {
+        min-height: 35px;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+
+        color: var(--accent);
+
+        font-family:
+            ui-monospace,
+            SFMono-Regular,
+            Menlo,
+            monospace;
+
+        font-size: 19px;
+    }
+
+
+    .nl-agent-link:hover {
+        color: #FFFFFF;
+    }
+
+
+    .nl-agent-description {
+        font-family:
+            ui-monospace,
+            SFMono-Regular,
+            Menlo,
+            monospace;
+
+        font-size: 9px;
+        line-height: 1.7;
+        letter-spacing: .07em;
+
+        color: var(--machine-muted);
+    }
+
+
+    /* =========================
+       CONTROL RAIL
+    ========================== */
+
+    .nl-rail {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 44%;
+
+        min-height: 98px;
+
+        background: var(--paper);
+
+        border-top: 1px solid var(--rule);
+    }
+
+
+    .nl-legal-zone {
+        min-width: 0;
+
+        padding: 0 clamp(24px, 4vw, 56px);
+
+        display: flex;
+        align-items: center;
+        gap: 18px;
+    }
+
+
+    .nl-copy-main {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        flex: 0 0 auto;
+    }
+
+
+    .nl-copyright {
+        font-family:
+            ui-monospace,
+            SFMono-Regular,
+            Menlo,
+            monospace;
+
+        font-size: 11px;
+        letter-spacing: .09em;
+        white-space: nowrap;
+    }
+
+
+    .nl-legal-toggle {
+        width: 27px;
+        height: 27px;
+
+        flex: 0 0 auto;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 0;
+
+        border: 1px solid var(--rule);
+
+        background: transparent;
+        color: var(--ink);
+
+        cursor: pointer;
+    }
+
+
+    .nl-legal-toggle:hover {
+        background: var(--rule);
+    }
+
+
+    .nl-caret {
+        display: block;
+
+        font-family:
+            ui-monospace,
+            SFMono-Regular,
+            Menlo,
+            monospace;
+
+        font-size: 8px;
+
+        transition:
+            transform 260ms cubic-bezier(.2,.7,.2,1);
+    }
+
+
+    .nl-legal-toggle[aria-expanded="true"] .nl-caret {
+        transform: rotate(180deg);
+    }
+
+
+    .nl-legal-detail {
+        display: grid;
+        grid-template-columns: 0fr;
+
+        transition:
+            grid-template-columns
+            300ms cubic-bezier(.2,.7,.2,1);
+    }
+
+
+    .nl-legal-detail.is-open {
+        grid-template-columns: 1fr;
+    }
+
+
+    .nl-legal-detail-inner {
+        min-width: 0;
+        overflow: hidden;
+    }
+
+
+    .nl-legal-text {
+        min-width: 250px;
+
+        padding-left: 18px;
+
+        border-left: 1px solid var(--rule);
+
+        font-family:
+            ui-monospace,
+            SFMono-Regular,
+            Menlo,
+            monospace;
+
+        font-size: 10px;
+        line-height: 1.65;
+        letter-spacing: .07em;
+
+        color: var(--muted);
+    }
+
+
+    .nl-full-zone {
+        display: flex;
+
+        background: var(--paper-2);
+
+        border-left: 1px solid var(--rule);
+    }
+
+
+    .nl-full-toggle {
+        flex: 1;
+
+        min-width: 0;
+        min-height: 98px;
+
+        padding: 0 clamp(24px, 3vw, 42px);
+
+        border: 0;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+
+        background: var(--paper-2);
+        color: var(--ink);
+
+        cursor: pointer;
+        text-align: left;
+
+        transition:
+            background 300ms cubic-bezier(.2,.7,.2,1),
+            color 300ms linear;
+    }
+
+
+    .nl-full-toggle:hover {
+        background: #E3E4DF;
+    }
+
+
+    .nl-full-toggle[aria-expanded="true"] {
+        background: var(--machine);
+        color: var(--light);
+    }
+
+
+    .nl-full-label {
+        font-size: clamp(25px, 2.3vw, 31px);
+        font-weight: 500;
+        letter-spacing: .045em;
+    }
+
+
+    .nl-full-glyph {
+        flex: 0 0 auto;
+
+        font-family:
+            ui-monospace,
+            SFMono-Regular,
+            Menlo,
+            monospace;
+
+        font-size: 25px;
+        line-height: 1;
+
+        transition:
+            transform 340ms cubic-bezier(.2,.7,.2,1);
+    }
+
+
+    .nl-full-toggle[aria-expanded="true"] .nl-full-glyph {
+        transform: rotate(135deg);
+    }
+
+
+
+
+    /* =========================
+       COVERAGE INDEX
+       Only new layout added to fit 40 city links.
+       Everything around it keeps the original geometry.
+    ========================== */
+
+    .nl-coverage-main {
+        margin-bottom: 10px;
+    }
+
+    .nl-coverage-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px 22px;
+        padding-top: 2px;
+    }
+
+    .nl-coverage-group {
+        min-width: 0;
+        padding-top: 9px;
+        border-top: 1px solid var(--machine-rule);
+    }
+
+    .nl-coverage-label {
+        display: block;
+        margin-bottom: 5px;
+
+        font-family:
+            ui-monospace,
+            SFMono-Regular,
+            Menlo,
+            Monaco,
+            Consolas,
+            monospace;
+
+        font-size: 8px;
+        line-height: 1.35;
+        letter-spacing: .15em;
+        text-transform: uppercase;
+        color: var(--machine-muted);
+    }
+
+    .nl-coverage-cities {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 1px 0;
+
+        font-size: 12px;
+        line-height: 1.6;
+        color: var(--machine-text);
+    }
+
+    .nl-coverage-city {
+        white-space: nowrap;
+        transition: color 140ms linear;
+    }
+
+    .nl-coverage-city:hover,
+    .nl-coverage-city:focus-visible {
+        color: #FFFFFF;
+    }
+
+    .nl-coverage-city:not(:last-child)::after {
+        content: "·";
+        display: inline-block;
+        margin: 0 6px;
+        color: var(--machine-muted);
+        pointer-events: none;
+    }
+
+    /* =========================
+       TABLET
+    ========================== */
+
+    @media (max-width: 1050px) {
+
+        .nl-system-head {
+            grid-template-columns: 1fr;
+        }
+
+        .nl-meta {
+            grid-template-columns:
+                repeat(5, minmax(0, 1fr));
+        }
+
+        .nl-row-secondary,
+        .nl-row-tertiary {
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+        }
+
+        .nl-hours-module {
+            grid-column: 1 / -1;
+        }
+
+    }
+
+
+    /* =========================
+       MOBILE
+    ========================== */
+
+    @media (max-width: 700px) {
+
+        .nl-panel-content {
+            padding: 24px 20px 28px;
+            gap: 22px;
+        }
+
+
+        .nl-title {
+            font-size: 21px;
+        }
+
+
+        .nl-meta {
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+        }
+
+
+        .nl-meta-cell:last-child {
+            grid-column: 1 / -1;
+        }
+
+
+        .nl-row-primary,
+        .nl-row-secondary,
+        .nl-row-tertiary {
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+
+
+        .nl-hours-module {
+            grid-column: auto;
+        }
+
+
+        .nl-module-head {
+            margin-bottom: 4px;
+            padding-bottom: 8px;
+        }
+
+
+        .nl-link {
+            min-height: 48px;
+            padding: 5px 0;
+
+            border-bottom: 1px solid var(--machine-2);
+
+            font-size: 16px;
+        }
+
+
+        .nl-link-arrow {
+            opacity: .55;
+            transform: none;
+        }
+
+
+        .nl-hours-axis {
+            grid-template-columns: 40px 1fr 82px;
+            gap: 8px;
+        }
+
+
+        .nl-hours-row {
+            grid-template-columns: 40px 1fr 82px;
+            gap: 8px;
+            min-height: 38px;
+        }
+
+
+        .nl-hours-value {
+            font-size: 9px;
+        }
+
+
+        .nl-phone {
+            font-size: 22px;
+        }
+
+
+        .nl-contact-item {
+            min-height: 48px;
+        }
+
+
+        .nl-book {
+            min-height: 56px;
+            font-size: 16px;
+        }
+
+
+        .nl-agent {
+            width: 100%;
+        }
+
+
+        .nl-rail {
+            grid-template-columns: 1fr;
+        }
+
+
+        .nl-legal-zone {
+            min-height: 72px;
+
+            padding: 14px 20px;
+
+            align-items: stretch;
+            flex-direction: column;
+            gap: 10px;
+
+            border-bottom: 1px solid var(--rule);
+        }
+
+
+        .nl-copy-main {
+            width: 100%;
+            min-height: 43px;
+
+            justify-content: space-between;
+        }
+
+
+        .nl-legal-toggle {
+            width: 44px;
+            height: 44px;
+        }
+
+
+        .nl-legal-detail {
+            width: 100%;
+
+            grid-template-columns: 1fr;
+            grid-template-rows: 0fr;
+
+            transition:
+                grid-template-rows
+                280ms cubic-bezier(.2,.7,.2,1);
+        }
+
+
+        .nl-legal-detail.is-open {
+            grid-template-columns: 1fr;
+            grid-template-rows: 1fr;
+        }
+
+
+        .nl-legal-detail-inner {
+            min-height: 0;
+        }
+
+
+        .nl-legal-text {
+            min-width: 0;
+            width: 100%;
+
+            padding:
+                10px 0 0;
+
+            border-left: 0;
+            border-top: 1px solid var(--rule);
+        }
+
+
+        .nl-full-zone {
+            border-left: 0;
+        }
+
+
+        .nl-full-toggle {
+            min-height: 84px;
+            padding: 0 20px;
+        }
+
+
+        .nl-full-label {
+            font-size: 25px;
+        }
+
+    }
+
+
+
+
+    @media (max-width: 700px) {
+
+        .nl-coverage-grid {
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .nl-coverage-group {
+            padding-top: 10px;
+        }
+
+        .nl-coverage-cities {
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .nl-coverage-city:not(:last-child)::after {
+            margin: 0 7px;
+        }
+
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+        .nl-panel,
+        .nl-stage,
+        .nl-caret,
+        .nl-full-glyph,
+        .nl-legal-detail,
+        .nl-link {
+            transition-duration: 1ms !important;
+            transition-delay: 0ms !important;
+        }
+
+    }
+
+
+</style>
+
+
+<script>
+    const root = document.querySelector("[data-northline-footer]");
+
+    if (root) {
+        const fullButton = root.querySelector(".nl-full-toggle");
+        const fullLabel = root.querySelector(".nl-full-label");
+        const panel = root.querySelector("#nl-full-panel");
+        const panelInner = root.querySelector("#nl-panel-inner");
+
+        const legalButton = root.querySelector(".nl-legal-toggle");
+        const legalDetail = root.querySelector("#nl-legal-detail");
+
+        let fullOpen = false;
+        let legalOpen = false;
+
+        const updateFull = () => {
+            if (!fullButton || !fullLabel || !panel || !panelInner) return;
+
+            panel.classList.toggle("is-open", fullOpen);
+            fullButton.setAttribute("aria-expanded", String(fullOpen));
+            panel.setAttribute("aria-hidden", String(!fullOpen));
+            fullLabel.textContent = fullOpen ? "CLOSE" : "FULL SITE";
+
+            if (fullOpen) {
+                panelInner.removeAttribute("inert");
+            } else {
+                panelInner.setAttribute("inert", "");
+            }
+        };
+
+        const updateLegal = () => {
+            if (!legalButton || !legalDetail) return;
+
+            legalButton.setAttribute("aria-expanded", String(legalOpen));
+            legalDetail.setAttribute("aria-hidden", String(!legalOpen));
+            legalDetail.classList.toggle("is-open", legalOpen);
+            legalButton.setAttribute(
+                "aria-label",
+                legalOpen ? "Hide legal business name" : "Show legal business name"
+            );
+        };
+
+        fullButton?.addEventListener("click", () => {
+            fullOpen = !fullOpen;
+            updateFull();
+        });
+
+        legalButton?.addEventListener("click", () => {
+            legalOpen = !legalOpen;
+            updateLegal();
+        });
+
+        updateFull();
+        updateLegal();
+    }
+</script>
