@@ -390,12 +390,18 @@
 </style>
 
 <script>
-  const header = document.querySelector("[data-northline-header]");
+  const header = document.querySelector<HTMLElement>(
+    "[data-northline-header]",
+  );
 
   if (header) {
-    const brand = header.querySelector("[data-brand-home]");
-    const logo = header.querySelector(".nl-logo");
-    const sms = header.querySelector("[data-sms-estimate]");
+    const brand = header.querySelector<HTMLElement>(
+      "[data-brand-home]",
+    );
+    const logo = header.querySelector<HTMLElement>(".nl-logo");
+    const sms = header.querySelector<HTMLElement>(
+      "[data-sms-estimate]",
+    );
 
     brand?.addEventListener("click", (event) => {
       if (
@@ -441,9 +447,13 @@
     });
 
     sms?.addEventListener("click", () => {
-      window.dataLayer = window.dataLayer || [];
+      const trackingWindow = window as Window & {
+        dataLayer?: Array<Record<string, unknown>>;
+      };
 
-      window.dataLayer.push({
+      trackingWindow.dataLayer ??= [];
+
+      trackingWindow.dataLayer.push({
         event: "get_quote_sms_click",
         placement: "header",
         source_page: window.location.pathname,

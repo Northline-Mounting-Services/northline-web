@@ -9,12 +9,20 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "check": "astro check",
+    "deploy": "npm run check && npm run build && wrangler deploy"
   },
   "dependencies": {
     "astro": "^7.3.2"
   },
   "allowScripts": {
     "esbuild": true
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@cloudflare/workers-types": "^5.20260914.1",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.131.2"
   }
 }
