@@ -1,0 +1,59 @@
+---
+// Package surface. Markup is static; src/scripts/home-state.js owns tab and
+// quantity state and writes prices from /api/home-state. No pricing maths here.
+const quantities = [2, 3, 4];
+
+// Fallback prices only — rendered so the page is never blank or "$—" while
+// /api/home-state loads, and left in place if the request fails. The client
+// module overwrites these the moment real priceCents values arrive.
+const fallbackOne = "$99";
+const fallbackMultiple = "$178";
+---
+
+<section class="nl-package" aria-labelledby="nl-package-heading" data-package>
+  <h2 class="nl-kicker" id="nl-package-heading">Package</h2>
+
+  <div class="nl-tabs" role="tablist" aria-label="Package size">
+    <button class="nl-tab is-active" type="button" role="tab" id="nl-tab-one"
+      aria-selected="true" aria-controls="nl-panel-one" data-mode="one">One TV</button>
+    <button class="nl-tab" type="button" role="tab" id="nl-tab-multiple"
+      aria-selected="false" aria-controls="nl-panel-multiple" data-mode="multiple">Multiple TVs</button>
+  </div>
+
+  <div class="nl-panel" id="nl-panel-one" role="tabpanel" aria-labelledby="nl-tab-one" data-panel="one">
+    <p class="nl-price">
+      <span class="nl-price__label">from</span>
+      <span class="nl-price__value" data-price="one">{fallbackOne}</span>
+    </p>
+    <p class="nl-package__descriptor">Standard wall &middot; basic installation.</p>
+    <a class="nl-action" href="/ai-tv-quote">
+      <span>Get a price from a photo</span><span aria-hidden="true">&rarr;</span>
+    </a>
+  </div>
+
+  <div class="nl-panel" id="nl-panel-multiple" role="tabpanel" aria-labelledby="nl-tab-multiple" data-panel="multiple" hidden>
+    <p class="nl-price">
+      <span class="nl-price__label">from</span>
+      <span class="nl-price__value" data-price="multiple">{fallbackMultiple}</span>
+    </p>
+    <p class="nl-package__descriptor">
+      <span data-qty-label>2</span> TVs in one visit &middot; 65&ndash;85&Prime; &middot; simple wall &middot; basic
+      installation. Not fireplace, Samsung Frame or specialty installs. We ask you to help lift and
+      hang the TVs.
+    </p>
+
+    <div class="nl-qty">
+      <p class="nl-kicker">How many</p>
+      <div class="nl-qty__row">
+        {quantities.map((n, i) => (
+          <button class={`nl-chip${i === 0 ? " is-active" : ""}`} type="button"
+            aria-pressed={i === 0 ? "true" : "false"} data-qty={String(n)}>{n} TVs</button>
+        ))}
+      </div>
+    </div>
+
+    <a class="nl-action" href="/book">
+      <span>Book installation</span><span aria-hidden="true">&rarr;</span>
+    </a>
+  </div>
+</section>

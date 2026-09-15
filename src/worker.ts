@@ -9,6 +9,7 @@ interface AssetFetcher {
 interface Env {
   ASSETS: AssetFetcher;
   HOME_STATE: KVNamespace;
+  GOOGLE_PLACES_API_KEY: string;
 }
 
 interface HomePricingSnapshot {
@@ -86,6 +87,98 @@ export default {
     env: Env,
   ): Promise<Response> {
     const url = new URL(request.url);
+
+    if (
+      url.pathname === '/api/google-reviews' &&
+      request.method === 'GET'
+    ) {
+      const placeId = 'ChIJESIhyxkTgCYRjAKLpYzJ69A';
+
+      const googleUrl =
+        'https:' +
+        '//places.googleapis.com/v1/places/' +
+        encodeURIComponent(placeId);
+
+      const response = await fetch(googleUrl, {
+        headers: {
+          'X-Goog-Api-Key': env.GOOGLE_PLACES_API_KEY,
+          'X-Goog-FieldMask':
+            'rating,userRatingCount,reviews',
+        },
+      });
+
+      if (!response.ok) {
+        console.error(
+          'Google Places reviews request failed:',
+          response.status,
+        );
+
+        return new Response(
+          JSON.stringify({
+            ok: false,
+            error: 'Reviews unavailable',
+          }),
+          {
+            status: 502,
+            headers: {
+              'content-type': 'application/json; charset=utf-8',
+              'cache-control': 'no-store',
+            },
+          },
+        );
+      }
+
+      const data = await response.json() as {
+        rating?: number;
+        userRatingCount?: number;
+        reviews?: Array<{
+          rating?: number;
+          text?: {
+            text?: string;
+          };
+          authorAttribution?: {
+            displayName?: string;
+            uri?: string;
+            photoUri?: string;
+          };
+          publishTime?: string;
+          relativePublishTimeDescription?: string;
+          googleMapsUri?: string;
+        }>;
+      };
+
+      const reviews = (data.reviews ?? [])
+        .slice(0, 3)
+        .map((review) => ({
+          rating: review.rating ?? null,
+          text: review.text?.text ?? '',
+          author: review.authorAttribution?.displayName ?? '',
+          authorUri: review.authorAttribution?.uri ?? null,
+          photoUri: review.authorAttribution?.photoUri ?? null,
+          publishTime: review.publishTime ?? null,
+          relativeTime:
+            review.relativePublishTimeDescription ?? '',
+          googleMapsUri: review.googleMapsUri ?? null,
+        }));
+
+      return new Response(
+        JSON.stringify({
+          ok: true,
+          rating: data.rating ?? null,
+          reviewCount: data.userRatingCount ?? null,
+          reviews,
+          attribution: 'Google Maps',
+          ordering: 'Google relevance',
+        }),
+        {
+          status: 200,
+          headers: {
+            'content-type': 'application/json; charset=utf-8',
+            'cache-control': 'no-store',
+          },
+        },
+      );
+    }
 
     if (
       url.pathname === '/api/home-state' &&

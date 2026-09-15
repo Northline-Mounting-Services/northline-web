@@ -1,0 +1,47 @@
+---
+const services = [
+  { label: "Fireplace TV mounting", href: "/tv-mounting/above-fireplace" },
+  { label: "Samsung Frame installation", href: "/tv-mounting/samsung-frame" },
+  { label: "TV mounting pricing", href: "/calculator" },
+  { label: "Get a price from a photo", href: "/ai-tv-quote" }
+];
+
+const areas = [
+  { label: "Alpharetta", href: "/tv-mounting/alpharetta" },
+  { label: "Roswell", href: "/tv-mounting/roswell" },
+  { label: "Johns Creek", href: "/tv-mounting/johns-creek" },
+  { label: "Milton", href: "/tv-mounting/milton" },
+  { label: "Cumming / Forsyth", href: "/tv-mounting/cumming" },
+  { label: "All service areas", href: "/service-area", quiet: true }
+];
+---
+
+<nav class="nl-explore" aria-labelledby="nl-explore-heading">
+  <h2 class="nl-kicker" id="nl-explore-heading">Explore Northline</h2>
+
+  <div class="nl-explore__cols">
+    <div>
+      <h3 class="nl-kicker">Services</h3>
+      <ul class="nl-index">
+        {services.map((item) => (
+          <li>
+            <a href={item.href}><span>{item.label}</span><span aria-hidden="true">&rarr;</span></a>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="nl-kicker">Service areas</h3>
+      <ul class="nl-index">
+        {areas.map((item) => (
+          <li>
+            <a href={item.href} class={item.quiet ? "is-quiet" : undefined}>
+              <span>{item.label}</span><span aria-hidden="true">&rarr;</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</nav>

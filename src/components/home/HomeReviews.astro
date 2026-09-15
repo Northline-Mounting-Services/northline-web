@@ -1,0 +1,44 @@
+---
+const reviewSlots = [0, 1, 2];
+---
+
+<section
+  class="nl-reviews"
+  aria-labelledby="nl-reviews-heading"
+  aria-busy="true"
+  data-google-reviews
+>
+  <h2 class="nl-rating" id="nl-reviews-heading">
+    <span class="nl-rating__stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+    <span class="nl-rating__score" data-google-rating>&mdash;</span>
+    <span>Google &middot; <span data-review-count>&mdash;</span> reviews</span>
+  </h2>
+
+  <p class="nl-kicker nl-reviews__label">Attested by household proxies &middot; last 3 jobs</p>
+
+  <div class="nl-reviews__feed" aria-live="polite">
+    {reviewSlots.map(() => (
+      <article class="nl-record" data-review-item>
+        <p class="nl-record__text" data-review-text>Loading&hellip;</p>
+
+        <p class="nl-record__meta">
+          <a
+            class="nl-review__author"
+            data-review-author
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Google reviewer
+          </a>
+
+          <time data-review-time></time>
+        </p>
+      </article>
+    ))}
+  </div>
+
+  <p class="nl-reviews__note" data-review-note>
+    Reviews provided by Google Maps
+  </p>
+</section>

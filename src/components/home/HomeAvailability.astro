@@ -1,0 +1,21 @@
+---
+// Labels come verbatim from /api/home-state (availability.today.label /
+// availability.next.label). No date or calendar logic in the browser.
+// The fallbacks below are deliberately non-temporal — no invented slots — and
+// are left untouched if the API request fails.
+---
+
+<div class="nl-avail-wrap">
+  <p class="nl-avail__lede">Same day if we have a van free.</p>
+
+  <section class="nl-avail" aria-label="Availability">
+    <div class="nl-avail__row">
+      <h2 class="nl-kicker">Today</h2>
+      <p class="nl-avail__value"><time data-avail="today">Call to confirm</time></p>
+    </div>
+    <div class="nl-avail__row">
+      <h2 class="nl-kicker">Next available</h2>
+      <p class="nl-avail__value"><time data-avail="next">Call to confirm</time></p>
+    </div>
+  </section>
+</div>

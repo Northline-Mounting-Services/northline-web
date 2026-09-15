@@ -13,7 +13,8 @@
   "kv_namespaces": [
     {
       "binding": "HOME_STATE",
-      "id": "184f666845d04ee99bec80b54b9be1cf"
+      "id": "184f666845d04ee99bec80b54b9be1cf",
+      "remote": true
     }
   ],
   "observability": {
