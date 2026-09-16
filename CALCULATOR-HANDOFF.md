@@ -26,33 +26,37 @@ import Calculator from '../components/Calculator.astro';
 
 Any element with `data-nl-open` opens the calculator and gets focus back on close.
 
-## Unresolved server-side operations
+## Server-side integration status
 
-All four live in `calculator-api.js`. Endpoint paths are `null` until the real Northline routes
-are defined; each function throws `PRODUCTION INTEGRATION REQUIRED` and the UI falls back to its
-honest unavailable / error states. No fake success anywhere.
+`calculator-api.js` is the browser integration boundary.
+
+### Implemented
 
 **1. `loadPublishedPricing()`** — published D1 snapshot only, never draft.
 
 ```json
 {
-  "version": "2026-09-15.3",
+  "version": "v6",
   "multiTvRules": [
     { "minQuantity": 2, "maxQuantity": 2, "percent": 0.10 },
     { "minQuantity": 3, "maxQuantity": null, "percent": 0.20 }
   ],
   "base": { "standard_tv": 0, "samsung_frame": 0 },
-  "items": { "standard_tv.mount.customer_mount": 0, "standard_tv.wall.stone_tile": "quote" },
-  "clientLiftRule": { "true": 0, "false": 0 }
+  "items": { "standard_tv.mount.customer_mount": 0, "standard_tv.tv_size.over_90": "quote" },
+  "clientLiftRule": { "true": -40, "false": 0 }
 }
 ```
 
 `items` keys are `family.groupCode.itemCode`. Values: number, `0` (included) or `"quote"`.
 `clientLiftRule` is the pricing rule for the context flag — it is not a pricing item.
 
-**2. `upsertCalculatorLead({ quoteId, phone, quote })` → `{ quoteId }`** — one quote identity.
+**2. `upsertCalculatorLead({ quoteId, phone, sourcePage, quote })` → `{ quoteId }`** — one quote identity.
 Called on every phone change and every configuration change while the phone is valid and the
 estimate complete, and immediately before booking. `calculator_lead_saved` fires only on success.
+
+Customer-facing totals use whole dollars; D1 persists those values as cents.
+
+### Still pending
 
 **3. `loadBookingAvailability({ from, to })` → `{ "YYYY-MM-DD": ["am","mid","pm"] }`** — derived
 from Cal.com server-side. Windows are exactly `am` 8–11 AM, `mid` 11 AM–2 PM, `pm` 2–5 PM,

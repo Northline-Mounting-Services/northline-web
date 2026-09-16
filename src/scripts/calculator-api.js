@@ -1,24 +1,23 @@
 /**
  * INTEGRATION BOUNDARY — server-side operations the calculator depends on.
  *
- * Every function here is a TODO against the real Northline backend. None of
- * them returns fake success: until they are implemented they reject, and the
- * UI shows its honest pricing-unavailable / booking-error states.
+ * Implemented:
+ * - published pricing: /api/calculator-pricing
+ * - lead persistence: /api/calculator-lead
  *
- * Endpoint paths are NOT yet defined by the Northline Astro project, so they
- * are declared once here as configuration rather than scattered through the
- * UI code. Replace them with the real routes when they exist.
+ * Still pending:
+ * - Cal.com-backed availability
+ * - Cal.com-backed booking creation
  *
- * Security: no Cal.com key, no service credential and no secret may appear in
- * this file or anywhere else in the browser bundle. All authenticated
- * scheduling and database work happens in server endpoints.
+ * Pending operations reject instead of returning fake success.
+ * Secrets stay server-side.
  */
 
 export const ENDPOINTS = {
   // Published pricing snapshot from the Northline Worker. Never draft.
   publishedPricing: '/api/calculator-pricing',
-  // TODO(northline): confirm real route — lead/quote upsert.
-  leadUpsert: null,
+  // Lead/quote upsert into D1 calculator_leads.
+  leadUpsert: '/api/calculator-lead',
   // TODO(northline): confirm real route — arrival-window availability from Cal.com, server-side.
   availability: null,
   // TODO(northline): confirm real route — booking creation through Cal.com, server-side.
@@ -76,7 +75,12 @@ export async function loadPublishedPricing() {
  * every configuration change once the phone is valid and the estimate is
  * complete, and again before booking.
  *
- * Request: { quoteId: string | null, phone: "+17705551234", quote: {...} }
+ * Request: {
+ *   quoteId: string | null,
+ *   phone: "+17705551234",
+ *   sourcePage: "/",
+ *   quote: {...}
+ * }
  * Expected response: { quoteId: string }
  * The caller fires calculator_lead_saved only on a resolved call.
  */

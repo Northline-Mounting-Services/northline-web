@@ -258,7 +258,12 @@ export function initCalculator(root) {
     const run = async () => {
       if (phoneState() !== 'valid' || !estimateComplete()) return;
       try {
-        const result = await upsertCalculatorLead({ quoteId, phone: phoneE164(), quote: serializeQuote() });
+        const result = await upsertCalculatorLead({
+          quoteId,
+          phone: phoneE164(),
+          sourcePage: window.location.pathname,
+          quote: serializeQuote()
+        });
         if (result && result.quoteId) quoteId = result.quoteId;
         track('calculator_lead_saved'); // only after the backend persisted it
       } catch (err) {
