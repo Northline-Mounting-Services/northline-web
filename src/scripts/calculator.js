@@ -176,10 +176,25 @@ export function initCalculator(root) {
 
   const fullSummary = (tv) => fullSummaryLines(tv).join(' · ') || 'Not configured yet';
 
+  function multiTvPercentForCount(count) {
+    if (count <= 1 || !state.pricing) return 0;
+
+    const rules = Array.isArray(state.pricing.multiTvRules)
+      ? state.pricing.multiTvRules
+      : [];
+
+    const rule = rules.find((candidate) =>
+      count >= candidate.minQuantity &&
+      (candidate.maxQuantity === null || count <= candidate.maxQuantity)
+    );
+
+    return rule ? rule.percent : 0;
+  }
+
   function totals() {
     const priced = state.tvs.map(tvPrice);
     const subtotal = priced.reduce((sum, p) => sum + p.total, 0);
-    const percent = state.tvs.length > 1 ? (state.pricing && state.pricing.multiTvPercent) || 0 : 0;
+    const percent = multiTvPercentForCount(state.tvs.length);
     return { subtotal, percent, total: subtotal * (1 - percent), quote: priced.some((p) => p.quote) };
   }
 

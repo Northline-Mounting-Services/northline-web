@@ -17,6 +17,14 @@
       "remote": true
     }
   ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "northline-core",
+      "database_id": "7b5910dd-eaa0-44f4-9827-112f8a45f2ce",
+      "remote": true
+    }
+  ],
   "observability": {
     "enabled": true
   }

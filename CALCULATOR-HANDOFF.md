@@ -37,7 +37,10 @@ honest unavailable / error states. No fake success anywhere.
 ```json
 {
   "version": "2026-09-15.3",
-  "multiTvPercent": 0.07,
+  "multiTvRules": [
+    { "minQuantity": 2, "maxQuantity": 2, "percent": 0.10 },
+    { "minQuantity": 3, "maxQuantity": null, "percent": 0.20 }
+  ],
   "base": { "standard_tv": 0, "samsung_frame": 0 },
   "items": { "standard_tv.mount.customer_mount": 0, "standard_tv.wall.stone_tile": "quote" },
   "clientLiftRule": { "true": 0, "false": 0 }
@@ -66,7 +69,7 @@ creates the booking through Cal.com. Only a resolved response carrying `bookingI
   `66_77` or `78_90`; read exclusively through `liftValue()`, so a stale value cannot reach
   pricing, validation, summaries, the SMS body or the serialized quote.
 - `cable` and `addons` may be empty; there is no "None" item.
-- Max 6 TVs; mixed families; multi-TV percentage comes from published pricing — no tiers, no packages.
+- Max 6 TVs; mixed families; multi-TV rules come from published pricing — no hardcoded tiers, no packages.
 - `calculator_phone_valid` fires on the not-valid → valid transition only; `phoneWasValid` gates
   nothing else.
 - `calculator_book_click` is interaction analytics. `/paul` is the only success destination and the

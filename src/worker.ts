@@ -1,4 +1,5 @@
 import type {
+  D1Database,
   KVNamespace,
 } from '@cloudflare/workers-types';
 
@@ -9,6 +10,7 @@ interface AssetFetcher {
 interface Env {
   ASSETS: AssetFetcher;
   HOME_STATE: KVNamespace;
+  DB: D1Database;
   GOOGLE_PLACES_API_KEY: string;
 }
 
@@ -42,6 +44,153 @@ interface HomeAvailabilitySnapshot {
     label: string;
   };
   syncedAt: string;
+}
+
+
+interface CalculatorPricingVersionRow {
+  id: number;
+  version_key: string;
+}
+
+interface CalculatorPricingItemRow {
+  family: string;
+  group_code: string;
+  item_code: string;
+  price_cents: number;
+  quote_required: number;
+}
+
+interface CalculatorPricingRuleRow {
+  rule_code: string;
+  value_type: string;
+  value_int: number;
+  min_quantity: number | null;
+  max_quantity: number | null;
+}
+
+async function loadCalculatorPricing(
+  db: D1Database,
+): Promise<{
+  version: string;
+  multiTvRules: Array<{
+    minQuantity: number;
+    maxQuantity: number | null;
+    percent: number;
+  }>;
+  base: {
+    standard_tv: number;
+    samsung_frame: number;
+  };
+  items: Record<string, number | 'quote'>;
+  clientLiftRule: Record<'true' | 'false', number> | null;
+} | null> {
+  const version = await db
+    .prepare(
+      `
+        SELECT id, version_key
+        FROM pricing_versions
+        WHERE status = 'published'
+        ORDER BY published_at DESC, id DESC
+        LIMIT 1
+      `,
+    )
+    .first<CalculatorPricingVersionRow>();
+
+  if (!version) {
+    return null;
+  }
+
+  const [itemResult, ruleResult] = await Promise.all([
+    db
+      .prepare(
+        `
+          SELECT
+            family,
+            group_code,
+            item_code,
+            price_cents,
+            quote_required
+          FROM pricing_items
+          WHERE version_id = ?
+            AND active = 1
+            AND family IN ('standard_tv', 'samsung_frame')
+          ORDER BY family, group_code, sort_order, item_code
+        `,
+      )
+      .bind(version.id)
+      .all<CalculatorPricingItemRow>(),
+
+    db
+      .prepare(
+        `
+          SELECT
+            rule_code,
+            value_type,
+            value_int,
+            min_quantity,
+            max_quantity
+          FROM pricing_rules
+          WHERE version_id = ?
+            AND active = 1
+            AND (
+              rule_code = 'client_lift'
+              OR rule_code LIKE 'multi_tv_%'
+            )
+          ORDER BY sort_order, rule_code
+        `,
+      )
+      .bind(version.id)
+      .all<CalculatorPricingRuleRow>(),
+  ]);
+
+  const items: Record<string, number | 'quote'> = {};
+
+  for (const item of itemResult.results) {
+    const key =
+      `${item.family}.${item.group_code}.${item.item_code}`;
+
+    items[key] = item.quote_required
+      ? 'quote'
+      : item.price_cents / 100;
+  }
+
+  const multiTvRules = ruleResult.results
+    .filter(
+      (rule) =>
+        rule.rule_code.startsWith('multi_tv_') &&
+        rule.value_type === 'basis_points' &&
+        rule.value_int < 0 &&
+        rule.min_quantity !== null &&
+        rule.min_quantity >= 2,
+    )
+    .map((rule) => ({
+      minQuantity: rule.min_quantity as number,
+      maxQuantity: rule.max_quantity,
+      percent: Math.max(0, -rule.value_int / 10000),
+    }))
+    .sort((a, b) => a.minQuantity - b.minQuantity);
+
+  const clientLift = ruleResult.results.find(
+    (rule) =>
+      rule.rule_code === 'client_lift' &&
+      rule.value_type === 'cents',
+  );
+
+  return {
+    version: version.version_key,
+    multiTvRules,
+    base: {
+      standard_tv: 0,
+      samsung_frame: 0,
+    },
+    items,
+    clientLiftRule: clientLift
+      ? {
+          true: clientLift.value_int / 100,
+          false: 0,
+        }
+      : null,
+  };
 }
 
 async function readJson<T>(
@@ -178,6 +327,62 @@ export default {
           },
         },
       );
+    }
+
+
+    if (
+      url.pathname === '/api/calculator-pricing' &&
+      request.method === 'GET'
+    ) {
+      try {
+        const pricing = await loadCalculatorPricing(env.DB);
+
+        if (!pricing) {
+          return new Response(
+            JSON.stringify({
+              ok: false,
+              error: 'Published pricing unavailable',
+            }),
+            {
+              status: 503,
+              headers: {
+                'content-type': 'application/json; charset=utf-8',
+                'cache-control': 'no-store',
+              },
+            },
+          );
+        }
+
+        return new Response(
+          JSON.stringify(pricing),
+          {
+            status: 200,
+            headers: {
+              'content-type': 'application/json; charset=utf-8',
+              'cache-control': 'no-store',
+            },
+          },
+        );
+      } catch (error) {
+        console.error(
+          'Calculator pricing request failed:',
+          error,
+        );
+
+        return new Response(
+          JSON.stringify({
+            ok: false,
+            error: 'Pricing unavailable',
+          }),
+          {
+            status: 500,
+            headers: {
+              'content-type': 'application/json; charset=utf-8',
+              'cache-control': 'no-store',
+            },
+          },
+        );
+      }
     }
 
     if (

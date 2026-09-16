@@ -15,8 +15,8 @@
  */
 
 export const ENDPOINTS = {
-  // TODO(northline): confirm real route — published (never draft) pricing snapshot.
-  publishedPricing: null,
+  // Published pricing snapshot from the Northline Worker. Never draft.
+  publishedPricing: '/api/calculator-pricing',
   // TODO(northline): confirm real route — lead/quote upsert.
   leadUpsert: null,
   // TODO(northline): confirm real route — arrival-window availability from Cal.com, server-side.
@@ -56,7 +56,11 @@ async function getJson(url) {
  * Expected shape:
  *   {
  *     version: string,
- *     multiTvPercent: number,            // dynamic; the UI defines no tiers
+ *     multiTvRules: Array<{
+ *       minQuantity: number,
+ *       maxQuantity: number | null,
+ *       percent: number
+ *     }>,                                // dynamic; tiers come from Published pricing
  *     base: { standard_tv: number, samsung_frame: number },
  *     items: { "<family>.<groupCode>.<itemCode>": number | 0 | "quote" },
  *     clientLiftRule: { true: number, false: number } | null   // pricing context
