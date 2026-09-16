@@ -78,6 +78,13 @@ export async function loadPublishedPricing() {
  *   quoteId: string | null,
  *   phone: "+17705551234",
  *   sourcePage: "/",
+ *   customer?: {
+ *     name?: string,
+ *     streetAddress?: string,
+ *     address2?: string,
+ *     city?: string,
+ *     notes?: string
+ *   },
  *   quote: {...}
  * }
  * Expected response: { quoteId: string }

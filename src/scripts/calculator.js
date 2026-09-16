@@ -232,6 +232,21 @@ export function initCalculator(root) {
     };
   }
 
+  function serializeCustomerDetails() {
+    const customer = {
+      name: state.customerName.trim(),
+      streetAddress: state.streetAddress.trim(),
+      address2: state.address2.trim(),
+      city: state.city.trim(),
+      notes: state.installerNotes.trim()
+    };
+
+    return state.stage === 'booking' ||
+      Object.values(customer).some(Boolean)
+      ? customer
+      : undefined;
+  }
+
   /* ---------------- phone ---------------- */
 
   const phoneDigits = () => state.phone.replace(/\D/g, '').replace(/^1(?=\d{10}$)/, '');
@@ -267,6 +282,7 @@ export function initCalculator(root) {
           quoteId,
           phone: phoneE164(),
           sourcePage: window.location.pathname,
+          customer: serializeCustomerDetails(),
           quote: serializeQuote()
         });
         if (result && result.quoteId) quoteId = result.quoteId;
@@ -1081,6 +1097,7 @@ export function initCalculator(root) {
     state[field] = event.target.value;
     state.bookStatus = 'idle';
     render();
+    scheduleLeadUpsert();
   });
 
   /* ---------------- modal ---------------- */

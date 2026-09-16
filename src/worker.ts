@@ -245,10 +245,19 @@ interface CalculatorLeadQuote {
   }>;
 }
 
+interface CalculatorLeadCustomer {
+  name?: string;
+  streetAddress?: string;
+  address2?: string;
+  city?: string;
+  notes?: string;
+}
+
 interface CalculatorLeadPayload {
   quoteId?: string | null;
   phone?: string;
   sourcePage?: string;
+  customer?: CalculatorLeadCustomer | null;
   quote?: CalculatorLeadQuote;
 }
 
@@ -257,6 +266,29 @@ const E164_US_PHONE =
 
 const UUID_V4 =
   /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+function normalizeCustomerText(
+  value: unknown,
+  maxLength: number,
+): string | null {
+  if (value === undefined || value === null || value === '') {
+    return null;
+  }
+
+  if (typeof value !== 'string') {
+    throw new Error('invalid_customer');
+  }
+
+  const normalized = value.trim();
+
+  if (!normalized) return null;
+
+  if (normalized.length > maxLength) {
+    throw new Error('invalid_customer');
+  }
+
+  return normalized;
+}
 
 function validateCalculatorLead(
   payload: CalculatorLeadPayload,
@@ -269,6 +301,14 @@ function validateCalculatorLead(
   subtotalCents: number | null;
   discountCents: number | null;
   totalCents: number | null;
+  customer: {
+    name: string | null;
+    streetAddress: string | null;
+    address2: string | null;
+    city: string | null;
+    state: 'GA';
+    notes: string | null;
+  } | null;
 } {
   if (
     typeof payload.phone !== 'string' ||
@@ -294,6 +334,36 @@ function validateCalculatorLead(
     payload.sourcePage.length <= 512
       ? payload.sourcePage
       : null;
+
+  let customer: {
+    name: string | null;
+    streetAddress: string | null;
+    address2: string | null;
+    city: string | null;
+    state: 'GA';
+    notes: string | null;
+  } | null = null;
+
+  if (payload.customer !== undefined && payload.customer !== null) {
+    if (
+      typeof payload.customer !== 'object' ||
+      Array.isArray(payload.customer)
+    ) {
+      throw new Error('invalid_customer');
+    }
+
+    customer = {
+      name: normalizeCustomerText(payload.customer.name, 100),
+      streetAddress: normalizeCustomerText(
+        payload.customer.streetAddress,
+        140,
+      ),
+      address2: normalizeCustomerText(payload.customer.address2, 80),
+      city: normalizeCustomerText(payload.customer.city, 80),
+      state: 'GA',
+      notes: normalizeCustomerText(payload.customer.notes, 500),
+    };
+  }
 
   const quote = payload.quote;
 
@@ -375,6 +445,7 @@ function validateCalculatorLead(
     subtotalCents,
     discountCents,
     totalCents,
+    customer,
   };
 }
 
@@ -401,7 +472,13 @@ async function upsertCalculatorLead(
           multi_tv_percent,
           discount_cents,
           total_cents,
-          pricing_version
+          pricing_version,
+          customer_name,
+          service_address,
+          service_address2,
+          service_city,
+          service_state,
+          customer_notes
         )
         VALUES (
           ?,
@@ -410,6 +487,12 @@ async function upsertCalculatorLead(
           ?,
           ?,
           'calculated',
+          ?,
+          ?,
+          ?,
+          ?,
+          ?,
+          ?,
           ?,
           ?,
           ?,
@@ -437,7 +520,37 @@ async function upsertCalculatorLead(
           multi_tv_percent = excluded.multi_tv_percent,
           discount_cents = excluded.discount_cents,
           total_cents = excluded.total_cents,
-          pricing_version = excluded.pricing_version
+          pricing_version = excluded.pricing_version,
+          customer_name = CASE
+            WHEN excluded.service_state IS NOT NULL
+              THEN excluded.customer_name
+            ELSE calculator_leads.customer_name
+          END,
+          service_address = CASE
+            WHEN excluded.service_state IS NOT NULL
+              THEN excluded.service_address
+            ELSE calculator_leads.service_address
+          END,
+          service_address2 = CASE
+            WHEN excluded.service_state IS NOT NULL
+              THEN excluded.service_address2
+            ELSE calculator_leads.service_address2
+          END,
+          service_city = CASE
+            WHEN excluded.service_state IS NOT NULL
+              THEN excluded.service_city
+            ELSE calculator_leads.service_city
+          END,
+          service_state = CASE
+            WHEN excluded.service_state IS NOT NULL
+              THEN excluded.service_state
+            ELSE calculator_leads.service_state
+          END,
+          customer_notes = CASE
+            WHEN excluded.service_state IS NOT NULL
+              THEN excluded.customer_notes
+            ELSE calculator_leads.customer_notes
+          END
       `,
     )
     .bind(
@@ -452,6 +565,12 @@ async function upsertCalculatorLead(
       lead.discountCents,
       lead.totalCents,
       lead.quote.pricingVersion,
+      lead.customer?.name ?? null,
+      lead.customer?.streetAddress ?? null,
+      lead.customer?.address2 ?? null,
+      lead.customer?.city ?? null,
+      lead.customer?.state ?? null,
+      lead.customer?.notes ?? null,
     )
     .run();
 
@@ -607,7 +726,8 @@ export default {
           message === 'invalid_phone' ||
           message === 'invalid_quote_id' ||
           message === 'invalid_quote' ||
-          message === 'invalid_quote_amounts'
+          message === 'invalid_quote_amounts' ||
+          message === 'invalid_customer'
         ) {
           return jsonResponse(
             {
