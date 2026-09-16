@@ -2,7 +2,7 @@
 const services = [
   { label: "Fireplace TV mounting", href: "/tv-mounting/above-fireplace" },
   { label: "Samsung Frame installation", href: "/tv-mounting/samsung-frame" },
-  { label: "TV mounting pricing", href: "/calculator" },
+  { label: "TV mounting pricing", action: "calculator" },
   { label: "Get a price from a photo", href: "/ai-tv-quote" }
 ];
 
@@ -25,7 +25,15 @@ const areas = [
       <ul class="nl-index">
         {services.map((item) => (
           <li>
-            <a href={item.href}><span>{item.label}</span><span aria-hidden="true">&rarr;</span></a>
+            {item.action === "calculator" ? (
+              <button type="button" class="nl-index-action" data-nl-open>
+                <span>{item.label}</span><span aria-hidden="true">&rarr;</span>
+              </button>
+            ) : (
+              <a href={item.href}>
+                <span>{item.label}</span><span aria-hidden="true">&rarr;</span>
+              </a>
+            )}
           </li>
         ))}
       </ul>

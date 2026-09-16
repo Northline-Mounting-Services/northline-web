@@ -1,4 +1,6 @@
 ---
+import Calculator from "./Calculator.astro";
+
 const year = new Date().getFullYear();
 
 const services = [
@@ -10,7 +12,7 @@ const services = [
 ];
 
 const plan = [
-    ["Calculate Price", "/calculator"],
+    ["Calculate Price", null],
     ["AI Photo Quote", "/ai-tv-quote"],
     ["Book a Time", "/book"],
 ];
@@ -213,10 +215,17 @@ const hours = [
                             </div>
                             <nav class="nl-link-list" aria-label="Plan and book">
                                 {plan.map(([label, href]) => (
-                                    <a class="nl-link" href={href}>
-                                        <span>{label}</span>
-                                        <span class="nl-link-arrow" aria-hidden="true">↗</span>
-                                    </a>
+                                    href ? (
+                                        <a class="nl-link" href={href}>
+                                            <span>{label}</span>
+                                            <span class="nl-link-arrow" aria-hidden="true">↗</span>
+                                        </a>
+                                    ) : (
+                                        <button type="button" class="nl-link nl-link-button" data-nl-open>
+                                            <span>{label}</span>
+                                            <span class="nl-link-arrow" aria-hidden="true">↗</span>
+                                        </button>
+                                    )
                                 ))}
                             </nav>
                         </section>
@@ -427,6 +436,8 @@ const hours = [
         </div>
 
     </footer>
+
+<Calculator />
 </div>
 
 <style>
@@ -744,6 +755,16 @@ const hours = [
     .nl-link-list {
         display: flex;
         flex-direction: column;
+    }
+
+
+    .nl-link-button {
+        width: 100%;
+        border: 0;
+        background: transparent;
+        font: inherit;
+        text-align: left;
+        cursor: pointer;
     }
 
 
