@@ -43,6 +43,7 @@ interface HomeAvailabilitySnapshot {
     start: string | null;
     label: string;
   };
+  calculator?: Record<string, Array<'am' | 'mid' | 'pm'>>;
   syncedAt: string;
 }
 
@@ -684,6 +685,64 @@ export default {
           },
         );
       }
+    }
+
+    if (
+      url.pathname === '/api/calculator-availability' &&
+      request.method === 'GET'
+    ) {
+      const from = url.searchParams.get('from');
+      const to = url.searchParams.get('to');
+      const dateOnly = /^\d{4}-\d{2}-\d{2}$/;
+
+      if (
+        !from ||
+        !to ||
+        !dateOnly.test(from) ||
+        !dateOnly.test(to) ||
+        from > to
+      ) {
+        return jsonResponse(
+          {
+            ok: false,
+            error: 'Invalid date range',
+          },
+          400,
+        );
+      }
+
+      const availability =
+        await readJson<HomeAvailabilitySnapshot>(
+          env.HOME_STATE,
+          'home:availability',
+        );
+
+      if (!availability?.calculator) {
+        return jsonResponse(
+          {
+            ok: false,
+            error: 'Calculator availability unavailable',
+          },
+          503,
+        );
+      }
+
+      const result = Object.fromEntries(
+        Object.entries(availability.calculator).filter(
+          ([date]) => date >= from && date <= to,
+        ),
+      );
+
+      return new Response(
+        JSON.stringify(result),
+        {
+          status: 200,
+          headers: {
+            'content-type': 'application/json; charset=utf-8',
+            'cache-control': 'no-store',
+          },
+        },
+      );
     }
 
     if (
