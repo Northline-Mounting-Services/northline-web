@@ -101,7 +101,7 @@ export function initCalculator(root) {
     if (state.pricingStatus !== 'ok' || value === null) return '';
     if (value === 'quote') return 'Custom quote';
     if (value === 0) return 'Included';
-    return '+' + money(value);
+    return value < 0 ? '-' + money(Math.abs(value)) : '+' + money(value);
   }
 
   /* ---------------- derived model ---------------- */
@@ -424,12 +424,40 @@ export function initCalculator(root) {
     </fieldset>`;
   }
 
+  function familyStartingPrice(family) {
+    if (state.pricingStatus !== 'ok') return null;
+
+    const def = INVENTORY[family];
+    if (!def) return null;
+
+    let total =
+      state.pricing.base &&
+      typeof state.pricing.base[family] === 'number'
+        ? state.pricing.base[family]
+        : 0;
+
+    for (const [groupCode, group] of Object.entries(def.groups)) {
+      if (group.multi) continue;
+
+      const prices = group.items
+        .map((item) => itemPrice(family, groupCode, item.itemCode))
+        .filter((value) => typeof value === 'number' && Number.isFinite(value));
+
+      if (!prices.length) return null;
+
+      total += Math.min(...prices);
+    }
+
+    return total;
+  }
+
   function renderConfig(tv) {
     if (!tv.family) {
       const cards = FAMILIES.map((f) => {
+        const startingPrice = familyStartingPrice(f.family);
         const base =
-          state.pricingStatus === 'ok' && state.pricing.base && typeof state.pricing.base[f.family] === 'number'
-            ? 'from ' + money(state.pricing.base[f.family])
+          startingPrice !== null
+            ? 'from ' + money(startingPrice)
             : '';
         return `<button type="button" class="nl-type" data-nl-family="${esc(f.family)}">
           <span class="nl-type__top"><span class="nl-type__name">${esc(f.label)}</span>${base ? `<span class="nl-type__meta">${esc(base)}</span>` : ''}</span>
@@ -534,9 +562,11 @@ export function initCalculator(root) {
           </button>
         </div>
         <div class="nl-sms-block">
-          <p class="nl-eyebrow">Want to ask first</p>
-          <p class="nl-lede">Questions about the wall, a fireplace, wire concealment or the price itself — no number needed. Your estimate travels with the message.</p>
-          <a class="nl-secondary" href="${esc(smsHref())}" data-nl-sms><span>Text us about this estimate</span><span aria-hidden="true">&rarr;</span></a>
+          <p class="nl-sms-title">Need help choosing the right option?</p>
+          <p class="nl-lede">If the estimate looks higher than expected or you’re not sure about the wall type, send a photo of the wall and TV area. We’ll review the setup and confirm the best option before you book.</p>
+          <a class="nl-sms-link" href="${esc(smsHref())}" data-nl-sms>
+            <span>Send Photo for Review</span><span aria-hidden="true">&rarr;</span>
+          </a>
           <p class="nl-mono">Opens Messages · (470) 470-9331</p>
         </div>
       </div>`;
@@ -589,7 +619,7 @@ export function initCalculator(root) {
 
     return `<p class="nl-eyebrow">Booking</p>
       <h2 class="nl-h2">Pick a day</h2>
-      <p class="nl-lede">Monday to Saturday, Eastern time. Three arrival windows a day.</p>
+      <p class="nl-lede">Please select a start time below. This begins your 3-hour arrival window (e.g., selecting 08:00 means we arrive between 8:00 AM and 11:00 AM).</p>
       <div class="nl-days" role="group" aria-label="Installation date">${days}</div>
       ${slots}
       ${error}`;

@@ -413,3 +413,31 @@
 .nl-hidden { display: none !important; }
 .nl-visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 body.nl-locked { overflow: hidden; }
+
+
+/* SMS photo-review action: intentionally reads as a text link, not a button. */
+.nl-sms-title {
+  margin: 0 0 10px;
+  font-weight: 700;
+}
+
+.nl-sms-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  color: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+.nl-sms-link:hover {
+  text-decoration-thickness: 2px;
+}
+
+.nl-sms-link:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
