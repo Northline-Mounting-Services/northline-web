@@ -1,0 +1,55 @@
+---
+/**
+ * Northline TV mounting calculator — modal over the current page.
+ *
+ * Usage in any Astro page or component:
+ *   import Calculator from '../components/Calculator.astro';
+ *   <button class="nl-cta" data-nl-open><span>Get exact price</span><span aria-hidden="true">&rarr;</span></button>
+ *   <Calculator />
+ *
+ * Any element with `data-nl-open` anywhere on the page opens the calculator
+ * and receives focus back when it closes.
+ *
+ * No prices, availability or inventory values live in this markup. The shell
+ * is server-rendered; the interactive panels are rendered by the client
+ * script from published pricing data.
+ */
+import '../styles/calculator.css';
+---
+
+<div data-nl-root>
+  <dialog class="nl-calc" aria-label="TV mounting estimate">
+    <div class="nl-calc__frame">
+      <header class="nl-calc__head">
+        <div class="nl-calc__brand">
+          <p class="nl-eyebrow">Northline</p>
+          <p class="nl-calc__stage-title" data-nl-stage-title>Price your installation</p>
+        </div>
+        <div class="nl-calc__head-actions">
+          <button type="button" class="nl-ghost" data-nl-back>&larr; Back</button>
+          <button type="button" class="nl-ghost nl-close" data-nl-close aria-label="Close estimate">&#215;</button>
+        </div>
+      </header>
+
+      <div class="nl-calc__body">
+        <div class="nl-calc__main" data-nl-main>
+          <p class="nl-eyebrow">Loading</p>
+          <noscript>
+            <p class="nl-lede">
+              The calculator needs JavaScript. Text us at
+              <a href="sms:+14704709331">(470) 470-9331</a> and we'll price your installation.
+            </p>
+          </noscript>
+        </div>
+        <aside class="nl-rail" aria-label="Order summary" data-nl-rail></aside>
+      </div>
+
+      <div class="nl-bar" data-nl-bar></div>
+    </div>
+  </dialog>
+</div>
+
+<script>
+  import { initCalculator } from '../scripts/calculator.js';
+  document.querySelectorAll('[data-nl-root]').forEach((root) => initCalculator(root));
+</script>
