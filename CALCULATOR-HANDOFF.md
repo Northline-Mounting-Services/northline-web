@@ -56,11 +56,11 @@ estimate complete, and immediately before booking. `calculator_lead_saved` fires
 
 Customer-facing totals use whole dollars; D1 persists those values as cents.
 
-### Still pending
-
 **3. `loadBookingAvailability({ from, to })` → `{ "YYYY-MM-DD": ["am","mid","pm"] }`** — derived
 from Cal.com server-side. Windows are exactly `am` 8–11 AM, `mid` 11 AM–2 PM, `pm` 2–5 PM,
 Monday–Saturday, America/New_York. Cal.com credentials stay server-side.
+
+### Still pending
 
 **4. `createInstallationBooking({ quoteId, phone, date, windowCode, quote })` → `{ bookingId }`** —
 creates the booking through Cal.com. Only a resolved response carrying `bookingId` triggers

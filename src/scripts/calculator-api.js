@@ -6,7 +6,6 @@
  * - lead persistence: /api/calculator-lead
  *
  * Still pending:
- * - Cal.com-backed availability
  * - Cal.com-backed booking creation
  *
  * Pending operations reject instead of returning fake success.
@@ -18,8 +17,8 @@ export const ENDPOINTS = {
   publishedPricing: '/api/calculator-pricing',
   // Lead/quote upsert into D1 calculator_leads.
   leadUpsert: '/api/calculator-lead',
-  // TODO(northline): confirm real route — arrival-window availability from Cal.com, server-side.
-  availability: null,
+  // Arrival-window availability from the shared Cal.com snapshot in HOME_STATE.
+  availability: '/api/calculator-availability',
   // TODO(northline): confirm real route — booking creation through Cal.com, server-side.
   createBooking: null
 };
