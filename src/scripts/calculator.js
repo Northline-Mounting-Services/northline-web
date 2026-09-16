@@ -57,6 +57,11 @@ export function initCalculator(root) {
     tvs: [newTv()],
     active: 0,
     phone: '',
+    customerName: '',
+    streetAddress: '',
+    address2: '',
+    city: '',
+    installerNotes: '',
     day: null, // YYYY-MM-DD
     windowCode: null,
     availability: null, // null = not loaded
@@ -340,8 +345,19 @@ export function initCalculator(root) {
 
   const windowsFor = (isoDate) => (state.availability && state.availability[isoDate]) || [];
 
+  function bookingDetailsComplete() {
+    return (
+      !!state.day &&
+      !!state.windowCode &&
+      state.customerName.trim().length > 0 &&
+      phoneState() === 'valid' &&
+      state.streetAddress.trim().length > 0 &&
+      state.city.trim().length > 0
+    );
+  }
+
   async function confirmBooking() {
-    if (!state.day || !state.windowCode || state.bookStatus === 'sending') return;
+    if (!bookingDetailsComplete() || state.bookStatus === 'sending') return;
     state.bookStatus = 'sending';
     render();
     try {
@@ -351,6 +367,15 @@ export function initCalculator(root) {
         phone: phoneE164(),
         date: state.day,
         windowCode: state.windowCode,
+        customer: {
+          name: state.customerName.trim(),
+          phone: phoneE164(),
+          streetAddress: state.streetAddress.trim(),
+          address2: state.address2.trim(),
+          city: state.city.trim(),
+          state: 'GA',
+          notes: state.installerNotes.trim()
+        },
         quote: serializeQuote()
       });
       if (!result || !result.bookingId) throw new Error('booking_not_confirmed');
@@ -605,6 +630,89 @@ export function initCalculator(root) {
         </div>`;
     }
 
+    const details =
+      state.day && state.windowCode
+        ? `<div class="nl-section nl-booking-details">
+            <p class="nl-eyebrow">Your details</p>
+
+            <div class="nl-booking-fields">
+              <label class="nl-booking-field">
+                <span>Full name <span aria-hidden="true">*</span></span>
+                <input
+                  id="nl-customer-name"
+                  type="text"
+                  value="${esc(state.customerName)}"
+                  autocomplete="name"
+                  maxlength="100"
+                  required
+                  data-nl-booking-field="customerName"
+                />
+              </label>
+
+              <label class="nl-booking-field">
+                <span>Phone <span aria-hidden="true">*</span></span>
+                <input
+                  id="nl-booking-phone"
+                  type="tel"
+                  value="${esc(prettyPhone())}"
+                  autocomplete="tel"
+                  inputmode="tel"
+                  maxlength="18"
+                  required
+                  data-nl-phone
+                />
+              </label>
+
+              <label class="nl-booking-field nl-booking-field--wide">
+                <span>Street address <span aria-hidden="true">*</span></span>
+                <input
+                  id="nl-street-address"
+                  type="text"
+                  value="${esc(state.streetAddress)}"
+                  autocomplete="address-line1"
+                  maxlength="140"
+                  required
+                  data-nl-booking-field="streetAddress"
+                />
+              </label>
+
+              <label class="nl-booking-field">
+                <span>Apt / Unit</span>
+                <input
+                  id="nl-address2"
+                  type="text"
+                  value="${esc(state.address2)}"
+                  autocomplete="address-line2"
+                  maxlength="80"
+                  data-nl-booking-field="address2"
+                />
+              </label>
+
+              <label class="nl-booking-field">
+                <span>City <span aria-hidden="true">*</span></span>
+                <input
+                  id="nl-city"
+                  type="text"
+                  value="${esc(state.city)}"
+                  autocomplete="address-level2"
+                  maxlength="80"
+                  required
+                  data-nl-booking-field="city"
+                />
+              </label>
+
+              <label class="nl-booking-field nl-booking-field--wide">
+                <span>Notes for installer</span>
+                <textarea
+                  id="nl-installer-notes"
+                  maxlength="500"
+                  data-nl-booking-field="installerNotes"
+                >${esc(state.installerNotes)}</textarea>
+              </label>
+            </div>
+          </div>`
+        : '';
+
     const error =
       state.bookStatus === 'error'
         ? `<div class="nl-error" role="alert">
@@ -622,6 +730,7 @@ export function initCalculator(root) {
       <p class="nl-lede">Please select a start time below. This begins your 3-hour arrival window (e.g., selecting 08:00 means we arrive between 8:00 AM and 11:00 AM).</p>
       <div class="nl-days" role="group" aria-label="Installation date">${days}</div>
       ${slots}
+      ${details}
       ${error}`;
   }
 
@@ -657,8 +766,14 @@ export function initCalculator(root) {
       label: sending ? 'Sending request…' : state.bookStatus === 'error' ? 'Try again' : 'Confirm booking',
       short: sending ? 'Sending…' : 'Confirm',
       action: 'confirm',
-      enabled: !sending && !!state.day && !!state.windowCode,
-      note: sending ? 'Creating the booking.' : state.day && state.windowCode ? '' : 'Pick a day and an arrival window.'
+      enabled: !sending && bookingDetailsComplete(),
+      note: sending
+        ? 'Creating the booking.'
+        : !state.day || !state.windowCode
+          ? 'Pick a day and an arrival window.'
+          : bookingDetailsComplete()
+            ? ''
+            : 'Complete the required details above.'
     };
   }
 
@@ -780,18 +895,26 @@ export function initCalculator(root) {
       state.stage === 'booking' ? 'Choose a time' : state.stage === 'review' ? 'Your estimate' : 'Price your installation';
     backBtn.classList.toggle('nl-hidden', state.stage === 'config' && !tv.family && state.tvs.length === 1);
 
-    const focusedPhone = document.activeElement && document.activeElement.id === 'nl-phone';
-    const caret = focusedPhone ? document.activeElement.selectionStart : null;
+    const activeEditor =
+      document.activeElement &&
+      main.contains(document.activeElement) &&
+      document.activeElement.matches('input, textarea')
+        ? {
+            id: document.activeElement.id,
+            start: document.activeElement.selectionStart,
+            end: document.activeElement.selectionEnd
+          }
+        : null;
 
     main.innerHTML = state.stage === 'booking' ? renderBooking() : state.stage === 'review' ? renderReview() : renderConfig(tv);
     rail.innerHTML = renderRail();
     bar.innerHTML = renderBar();
 
-    if (focusedPhone) {
-      const input = main.querySelector('#nl-phone');
+    if (activeEditor && activeEditor.id) {
+      const input = main.querySelector('#' + activeEditor.id);
       if (input) {
         input.focus();
-        try { input.setSelectionRange(caret, caret); } catch (e) {}
+        try { input.setSelectionRange(activeEditor.start, activeEditor.end); } catch (e) {}
       }
     }
   }
@@ -931,13 +1054,33 @@ export function initCalculator(root) {
   });
 
   root.addEventListener('input', (event) => {
-    if (!event.target.matches('[data-nl-phone]')) return;
-    state.phone = event.target.value;
-    const nowValid = phoneState() === 'valid';
-    if (nowValid && !phoneWasValid) track('calculator_phone_valid'); // transition only
-    phoneWasValid = nowValid;
+    if (event.target.matches('[data-nl-phone]')) {
+      state.phone = event.target.value;
+      const nowValid = phoneState() === 'valid';
+      if (nowValid && !phoneWasValid) track('calculator_phone_valid'); // transition only
+      phoneWasValid = nowValid;
+      if (state.stage === 'booking') state.bookStatus = 'idle';
+      render();
+      if (nowValid) scheduleLeadUpsert(); // every change, including valid → valid
+      return;
+    }
+
+    const field = event.target.dataset.nlBookingField;
+    if (!field) return;
+
+    const allowed = new Set([
+      'customerName',
+      'streetAddress',
+      'address2',
+      'city',
+      'installerNotes'
+    ]);
+
+    if (!allowed.has(field)) return;
+
+    state[field] = event.target.value;
+    state.bookStatus = 'idle';
     render();
-    if (nowValid) scheduleLeadUpsert(); // every change, including valid → valid
   });
 
   /* ---------------- modal ---------------- */
@@ -971,7 +1114,7 @@ export function initCalculator(root) {
   });
   dialog.addEventListener('keydown', (event) => {
     if (event.key !== 'Tab') return;
-    const nodes = Array.from(dialog.querySelectorAll('button:not([disabled]), a[href], input, [tabindex="0"]')).filter(
+    const nodes = Array.from(dialog.querySelectorAll('button:not([disabled]), a[href], input, textarea, [tabindex="0"]')).filter(
       (n) => n.offsetParent !== null
     );
     if (!nodes.length) return;
