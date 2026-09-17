@@ -25,6 +25,12 @@
       "remote": true
     }
   ],
+  "services": [
+    {
+      "binding": "NORTHLINE_ADMIN",
+      "service": "northline-admin"
+    }
+  ],
   "observability": {
     "enabled": true
   }

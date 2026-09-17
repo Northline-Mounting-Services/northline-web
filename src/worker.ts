@@ -7,10 +7,15 @@ interface AssetFetcher {
   fetch(request: Request): Promise<Response>;
 }
 
+interface ServiceFetcher {
+  fetch(request: Request): Promise<Response>;
+}
+
 interface Env {
   ASSETS: AssetFetcher;
   HOME_STATE: KVNamespace;
   DB: D1Database;
+  NORTHLINE_ADMIN: ServiceFetcher;
   GOOGLE_PLACES_API_KEY: string;
 }
 
