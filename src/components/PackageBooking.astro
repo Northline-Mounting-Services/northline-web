@@ -4,8 +4,8 @@
  * package CTA on that page.
  *
  * Declarative:
- *   <article data-nl-package-id="NL-PKG-MULTI"
- *            data-nl-package-category="MULTIPLE TVs"
+ *   <article data-nl-package-id="NL-PKG-MULTI-2"
+ *            data-nl-package-category="2 TVs · One visit"
  *            data-nl-package-price="from $178.20"
  *            data-nl-package-description="...">
  *     <button type="button" class="nl-cta" data-nl-package-open>…</button>
@@ -22,19 +22,18 @@ import '../styles/package-booking.css';
 ---
 
 <div data-nl-pkg-root>
-  <dialog class="nl-calc" aria-label="Book installation">
+  <dialog class="nl-calc nl-pkg" aria-label="Book installation">
     <div class="nl-calc__frame">
       <header class="nl-calc__head">
         <div class="nl-calc__brand">
           <p class="nl-eyebrow">Northline</p>
-          <p class="nl-calc__stage-title">Book installation</p>
+          <p class="nl-calc__stage-title">Choose a time</p>
         </div>
         <div class="nl-calc__head-actions">
+          <button type="button" class="nl-ghost" data-nl-pkg-close>&larr; Back</button>
           <button type="button" class="nl-ghost nl-close" data-nl-pkg-close aria-label="Close booking">&#215;</button>
         </div>
       </header>
-
-      <div class="nl-pkg__summary" data-nl-pkg-summary></div>
 
       <div class="nl-calc__body">
         <div class="nl-calc__main" data-nl-pkg-main>
@@ -45,6 +44,7 @@ import '../styles/package-booking.css';
             </p>
           </noscript>
         </div>
+        <aside class="nl-rail" aria-label="Order summary" data-nl-pkg-rail></aside>
       </div>
     </div>
   </dialog>

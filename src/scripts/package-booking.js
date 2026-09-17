@@ -6,10 +6,12 @@
  * or declaratively, via a CTA carrying data-nl-package-* attributes.
  *
  * The popup prices nothing. priceLabel is rendered verbatim — "from $178.20"
- * stays "from $178.20". Rounding belongs to the calculator, not here.
+ * stays "from $178.20", and it is display context only: the server reprices
+ * canonically and never trusts a browser-supplied price.
  *
- * Booking creation is a single call to createPackageBooking(). No success is
- * simulated and no redirect happens without a real bookingId.
+ * Flow is strictly progressive: day → arrival window → customer details.
+ * Availability is visible the moment the popup opens; nothing is asked of the
+ * customer before they have seen it.
  */
 
 import { ARRIVAL_WINDOWS, SMS_RECIPIENT, BOOKING_SUCCESS_URL } from '../data/calculator-inventory.js';
@@ -35,11 +37,11 @@ const esc = (v) =>
   String(v == null ? '' : v).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 const FIELDS = [
-  { name: 'name', label: 'Full name', type: 'text', autocomplete: 'name', required: true },
-  { name: 'phone', label: 'US phone number', type: 'tel', autocomplete: 'tel', required: true, inputmode: 'tel', placeholder: '(770) 555-1234' },
-  { name: 'address1', label: 'Street address', type: 'text', autocomplete: 'address-line1', required: true },
-  { name: 'address2', label: 'Apt, suite, unit (optional)', type: 'text', autocomplete: 'address-line2' },
-  { name: 'city', label: 'City', type: 'text', autocomplete: 'address-level2', required: true }
+  { name: 'name', label: 'Full name', type: 'text', autocomplete: 'name', required: true, span: 1 },
+  { name: 'phone', label: 'Phone', type: 'tel', autocomplete: 'tel', required: true, inputmode: 'tel', placeholder: '(770) 555-1234', span: 1 },
+  { name: 'address1', label: 'Street address', type: 'text', autocomplete: 'address-line1', required: true, span: 2 },
+  { name: 'address2', label: 'Apt / Unit', type: 'text', autocomplete: 'address-line2', span: 1 },
+  { name: 'city', label: 'City', type: 'text', autocomplete: 'address-level2', required: true, span: 1 }
 ];
 
 const blankCustomer = () => ({ name: '', phone: '', address1: '', address2: '', city: '', state: 'GA', notes: '' });
@@ -47,8 +49,8 @@ const blankCustomer = () => ({ name: '', phone: '', address1: '', address2: '', 
 export function initPackageBooking(root) {
   const dialog = root.querySelector('dialog');
   const main = root.querySelector('[data-nl-pkg-main]');
-  const summary = root.querySelector('[data-nl-pkg-summary]');
-  if (!dialog || !main || !summary) return null;
+  const rail = root.querySelector('[data-nl-pkg-rail]');
+  if (!dialog || !main || !rail) return null;
 
   const state = {
     pkg: null,
@@ -82,7 +84,8 @@ export function initPackageBooking(root) {
   }
 
   const customerComplete = () => FIELDS.every((f) => !fieldError(f.name));
-  const readyToBook = () => customerComplete() && !!state.day && !!state.windowCode;
+  const detailsVisible = () => !!state.day && !!state.windowCode;
+  const readyToBook = () => detailsVisible() && customerComplete();
 
   /* ---------------- availability ---------------- */
 
@@ -198,44 +201,21 @@ export function initPackageBooking(root) {
     }
   }
 
-  /* ---------------- rendering ---------------- */
+  /* ---------------- left column ---------------- */
 
   const smsHref = () =>
     `sms:${SMS_RECIPIENT}?&body=${encodeURIComponent(
       `Northline — ${state.pkg ? state.pkg.category : 'package'} (${state.pkg ? state.pkg.priceLabel : ''})\n\nQuestion: `
     )}`;
 
-  function renderSummary() {
+  function renderIntro() {
     const p = state.pkg;
     if (!p) return '';
-    return `<p class="nl-eyebrow">Booking</p>
-      <p class="nl-pkg__category">${esc(p.category)}</p>
+    return `<div class="nl-pkg__intro">
+      <p class="nl-eyebrow">Booking</p>
+      <p class="nl-pkg__title">${esc(p.category)}</p>
       <p class="nl-pkg__price">${esc(p.priceLabel)}</p>
-      <p class="nl-pkg__desc">${esc(p.description)}</p>`;
-  }
-
-  function renderField(f) {
-    const err = state.showErrors ? fieldError(f.name) : null;
-    const id = `nl-pkg-${f.name}`;
-    const attrs = [
-      `id="${id}"`,
-      `name="${f.name}"`,
-      `type="${f.type}"`,
-      `class="nl-input"`,
-      `value="${esc(state.customer[f.name])}"`,
-      `autocomplete="${f.autocomplete}"`,
-      f.inputmode ? `inputmode="${f.inputmode}"` : '',
-      f.placeholder ? `placeholder="${esc(f.placeholder)}"` : '',
-      f.required ? 'required' : '',
-      err ? `data-state="invalid" aria-invalid="true" aria-describedby="${id}-help"` : '',
-      `data-nl-pkg-field="${f.name}"`
-    ]
-      .filter(Boolean)
-      .join(' ');
-    return `<div class="nl-pkg__field">
-      <label class="nl-label" for="${id}">${esc(f.label)}</label>
-      <input ${attrs} />
-      ${err ? `<p class="nl-help" id="${id}-help" data-state="invalid">${esc(err)}</p>` : ''}
+      <p class="nl-pkg__desc">${esc(p.description)}</p>
     </div>`;
   }
 
@@ -274,55 +254,120 @@ export function initPackageBooking(root) {
     </div>`;
   }
 
-  function renderBody() {
-    const sending = state.status === 'sending';
-    const error =
-      state.status === 'error'
-        ? `<div class="nl-error" role="alert">
-            <p class="nl-error__title">We couldn't create that booking</p>
-            <p class="nl-error__body">Your package, details, day and arrival window are still selected. Try again, or text us and we'll book it for you.</p>
-            <div class="nl-error__actions">
-              <button type="button" class="nl-retry" data-nl-pkg-confirm>Retry</button>
-              <a class="nl-secondary" style="margin:0;width:auto;max-width:none" href="${esc(smsHref())}">Text us instead</a>
-            </div>
-          </div>`
-        : '';
+  function renderField(f) {
+    const err = state.showErrors ? fieldError(f.name) : null;
+    const id = `nl-pkg-${f.name}`;
+    const attrs = [
+      `id="${id}"`,
+      `name="${f.name}"`,
+      `type="${f.type}"`,
+      `class="nl-input"`,
+      `value="${esc(state.customer[f.name])}"`,
+      `autocomplete="${f.autocomplete}"`,
+      f.inputmode ? `inputmode="${f.inputmode}"` : '',
+      f.placeholder ? `placeholder="${esc(f.placeholder)}"` : '',
+      f.required ? 'required' : '',
+      err ? `data-state="invalid" aria-invalid="true" aria-describedby="${id}-help"` : '',
+      `data-nl-pkg-field="${f.name}"`
+    ]
+      .filter(Boolean)
+      .join(' ');
+    return `<div class="nl-pkg__field"${f.span === 2 ? ' data-span="2"' : ''}>
+      <label class="nl-label" for="${id}">${esc(f.label)}${f.required ? ' *' : ''}</label>
+      <input ${attrs} />
+      ${err ? `<p class="nl-help" id="${id}-help" data-state="invalid">${esc(err)}</p>` : ''}
+    </div>`;
+  }
 
-    const blocked = state.showErrors && !readyToBook() && state.status !== 'error';
-    const blockedNote = blocked
-      ? `<p class="nl-help" data-state="invalid" role="alert">${
-          customerComplete() ? 'Choose a day and an arrival window.' : 'Check the highlighted details above.'
-        }</p>`
-      : '';
-
+  /* Revealed only once a day AND an available arrival window are chosen. */
+  function renderDetails() {
+    if (!detailsVisible()) return '';
     return `<div class="nl-section">
-        <p class="nl-section__title">Your details</p>
-        <div class="nl-pkg__fields">
-          ${FIELDS.map(renderField).join('')}
-          <div class="nl-pkg__field">
-            <label class="nl-label" for="nl-pkg-state">State</label>
-            <input class="nl-input" id="nl-pkg-state" name="state" type="text" value="GA" readonly aria-readonly="true" />
-          </div>
+      <p class="nl-eyebrow">Your details</p>
+      <div class="nl-pkg__fields">
+        ${FIELDS.map(renderField).join('')}
+        <div class="nl-pkg__field">
+          <label class="nl-label" for="nl-pkg-state">State</label>
+          <input class="nl-input" id="nl-pkg-state" name="state" type="text" value="GA" readonly aria-readonly="true" />
         </div>
-        <div class="nl-pkg__field nl-pkg__field--wide">
-          <label class="nl-label" for="nl-pkg-notes">Notes for the installer (optional)</label>
+        <div class="nl-pkg__field" data-span="2">
+          <label class="nl-label" for="nl-pkg-notes">Notes for installer</label>
           <textarea class="nl-input nl-pkg__textarea" id="nl-pkg-notes" name="notes" rows="3"
             data-nl-pkg-field="notes">${esc(state.customer.notes)}</textarea>
         </div>
       </div>
+    </div>`;
+  }
 
+  function renderMain() {
+    return `${renderIntro()}
       <div class="nl-section">
         <p class="nl-section__title">Pick a day</p>
         <p class="nl-lede">Monday to Saturday, Eastern time. Three arrival windows a day.</p>
         <div class="nl-days" role="group" aria-label="Installation date">${renderDays()}</div>
       </div>
       ${renderSlots()}
-      ${error}
-      <div style="margin-top:22px;max-width:420px">
-        <button type="button" class="nl-primary" data-nl-pkg-confirm ${sending ? 'disabled aria-disabled="true"' : ''}>
-          <span>${sending ? 'Booking…' : 'Book installation'}</span><span aria-hidden="true">&rarr;</span>
+      ${renderDetails()}`;
+  }
+
+  /* ---------------- right column (order summary) ---------------- */
+
+  function renderRail() {
+    const p = state.pkg;
+    if (!p) return '';
+    const sending = state.status === 'sending';
+    const ready = readyToBook();
+
+    const when = state.day
+      ? (() => {
+          const d = dateFromIso(state.day);
+          const w = ARRIVAL_WINDOWS.find((x) => x.windowCode === state.windowCode);
+          return `${DOW[d.getUTCDay()]}, ${MONTH[d.getUTCMonth()]} ${d.getUTCDate()}${w ? ` · ${w.label}` : ''}`;
+        })()
+      : null;
+
+    const error =
+      state.status === 'error'
+        ? `<div class="nl-error" role="alert">
+            <p class="nl-error__title">We couldn't create that booking</p>
+            <p class="nl-error__body">Your package, details, day and arrival window are still selected. Try again, or text us and we'll book it for you.</p>
+            <div class="nl-error__actions">
+              <a class="nl-secondary" style="margin:0;width:auto;max-width:none" href="${esc(smsHref())}">Text us instead</a>
+            </div>
+          </div>`
+        : '';
+
+    const note = state.showErrors && !ready && state.status !== 'error'
+      ? `<p class="nl-help" data-state="invalid" role="alert">${
+          detailsVisible() ? 'Complete the required details above.' : 'Choose a day and an arrival window.'
+        }</p>`
+      : '';
+
+    return `<div class="nl-rail__list">
+        <p class="nl-eyebrow">Order</p>
+        <div class="nl-rail__tv" style="border-bottom:0">
+          <div class="nl-rail__tv-top">
+            <p class="nl-rail__tv-name">${esc(p.category)}</p>
+            <p class="nl-rail__tv-price" data-priced="true">${esc(p.priceLabel)}</p>
+          </div>
+          <p class="nl-rail__tv-summary">${esc(p.description)}</p>
+        </div>
+        ${when ? `<div class="nl-rail__mini" style="margin-top:14px;border-bottom:0;padding-bottom:0">
+          <div class="nl-rail__mini-row"><span>Appointment</span><span>${esc(when)}</span></div>
+        </div>` : ''}
+      </div>
+      <div class="nl-rail__foot">
+        <dl class="nl-totals">
+          <div class="nl-totals__row"><dt>Package</dt><dd>${esc(p.priceLabel)}</dd></div>
+          <div class="nl-totals__row nl-totals__row--total"><dt>Estimated total</dt><dd>${esc(p.priceLabel)}</dd></div>
+        </dl>
+        ${error}
+        <button type="button" class="nl-primary" style="margin-top:16px" data-nl-pkg-confirm
+          ${sending ? 'disabled aria-disabled="true"' : ''}>
+          <span>${sending ? 'Booking…' : state.status === 'error' ? 'Retry booking' : 'Confirm booking'}</span><span aria-hidden="true">&rarr;</span>
         </button>
-        ${blockedNote}
+        ${note}
+        <p class="nl-rail__note">Final price is confirmed by Northline before any charge.</p>
       </div>`;
   }
 
@@ -331,8 +376,8 @@ export function initPackageBooking(root) {
     const focusedField = active && active.dataset ? active.dataset.nlPkgField : null;
     const caret = focusedField && active.setSelectionRange ? active.selectionStart : null;
 
-    summary.innerHTML = renderSummary();
-    main.innerHTML = renderBody();
+    main.innerHTML = renderMain();
+    rail.innerHTML = renderRail();
 
     if (focusedField) {
       const next = main.querySelector(`[data-nl-pkg-field="${focusedField}"]`);
@@ -357,8 +402,13 @@ export function initPackageBooking(root) {
   root.addEventListener('click', (event) => {
     const day = event.target.closest('[data-nl-pkg-day]');
     if (day) {
-      state.day = day.dataset.nlPkgDay;
-      state.windowCode = null;
+      const next = day.dataset.nlPkgDay;
+      if (next !== state.day) {
+        state.day = next;
+        /* A new day invalidates the window, which hides the details again
+           until an available window is chosen. */
+        state.windowCode = null;
+      }
       state.status = 'idle';
       return render();
     }
@@ -398,7 +448,7 @@ export function initPackageBooking(root) {
     track('package_booking_open');
     render();
     refreshAvailability();
-    const first = dialog.querySelector('input:not([readonly]), button:not([disabled]), a[href]');
+    const first = dialog.querySelector('.nl-day:not([disabled])') || dialog.querySelector('button:not([disabled])');
     if (first) first.focus();
   }
 
