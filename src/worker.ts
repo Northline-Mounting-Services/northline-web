@@ -956,6 +956,130 @@ async function upsertCalculatorLead(
   return lead.quoteId;
 }
 
+
+type PublicPackage = {
+  packageId: string;
+  name: string;
+  description: string;
+  priceCents: number;
+  pricingFamily: string;
+  minQuantity: number | null;
+  maxQuantity: number | null;
+};
+
+function isPublishedPackageQuantity(
+  value: unknown,
+): value is number | null {
+  return (
+    value === null ||
+    (
+      typeof value === 'number' &&
+      Number.isInteger(value)
+    )
+  );
+}
+
+async function loadPublishedPackages(
+  env: Env,
+): Promise<{
+  version: string;
+  packages: PublicPackage[];
+}> {
+  const adminResponse =
+    await env.NORTHLINE_ADMIN.fetch(
+      new Request(
+        'https://northline-admin/internal/published-packages',
+        {
+          method: 'GET',
+          headers: {
+            accept: 'application/json',
+            'x-northline-internal-token':
+              env.INTERNAL_API_TOKEN,
+          },
+        },
+      ),
+    );
+
+  const raw: unknown =
+    await adminResponse.json()
+      .catch(() => null);
+
+  if (
+    !adminResponse.ok ||
+    typeof raw !== 'object' ||
+    raw === null ||
+    Array.isArray(raw)
+  ) {
+    throw new Error(
+      'published_packages_unavailable',
+    );
+  }
+
+  const body =
+    raw as Record<string, unknown>;
+
+  if (
+    body.ok !== true ||
+    typeof body.version !== 'string' ||
+    !Array.isArray(body.packages)
+  ) {
+    throw new Error(
+      'invalid_published_packages_response',
+    );
+  }
+
+  const packages: PublicPackage[] =
+    body.packages.map((value) => {
+      if (
+        typeof value !== 'object' ||
+        value === null ||
+        Array.isArray(value)
+      ) {
+        throw new Error(
+          'invalid_published_package',
+        );
+      }
+
+      const item =
+        value as Record<string, unknown>;
+
+      if (
+        typeof item.packageId !== 'string' ||
+        typeof item.name !== 'string' ||
+        typeof item.description !== 'string' ||
+        typeof item.priceCents !== 'number' ||
+        !Number.isInteger(item.priceCents) ||
+        item.priceCents < 0 ||
+        typeof item.pricingFamily !== 'string' ||
+        !isPublishedPackageQuantity(
+          item.minQuantity,
+        ) ||
+        !isPublishedPackageQuantity(
+          item.maxQuantity,
+        )
+      ) {
+        throw new Error(
+          'invalid_published_package',
+        );
+      }
+
+      return {
+        packageId: item.packageId,
+        name: item.name,
+        description: item.description,
+        priceCents: item.priceCents,
+        pricingFamily: item.pricingFamily,
+        minQuantity: item.minQuantity,
+        maxQuantity: item.maxQuantity,
+      };
+    });
+
+  return {
+    version: body.version,
+    packages,
+  };
+}
+
 export default {
   async fetch(
     request: Request,
@@ -1127,6 +1251,37 @@ export default {
             error: 'Lead could not be saved',
           },
           500,
+        );
+      }
+    }
+
+    if (
+      url.pathname === '/api/packages' &&
+      request.method === 'GET'
+    ) {
+      try {
+        const published =
+          await loadPublishedPackages(env);
+
+        return jsonResponse({
+          ok: true,
+          version: published.version,
+          packages: published.packages,
+        });
+      } catch (error) {
+        console.error(
+          'Published packages lookup failed:',
+          error instanceof Error
+            ? error.message
+            : 'unknown_error',
+        );
+
+        return jsonResponse(
+          {
+            ok: false,
+            error: 'Packages unavailable',
+          },
+          503,
         );
       }
     }
