@@ -16,7 +16,7 @@ export const ENDPOINTS = {
   publishedPricing: '/api/calculator-pricing',
   // Lead/quote upsert into D1 calculator_leads.
   leadUpsert: '/api/calculator-lead',
-  // Arrival-window availability from the shared Cal.com snapshot in HOME_STATE.
+  // Arrival-window availability from the shared Google Calendar snapshot in HOME_STATE.
   availability: '/api/calculator-availability',
   // Confirmed booking creation through the Northline server-side booking engine.
   createBooking: '/api/calculator-booking'
@@ -95,7 +95,7 @@ export async function upsertCalculatorLead(payload) {
 }
 
 /**
- * Arrival-window availability, derived from Cal.com server-side.
+ * Arrival-window availability, derived from Google Calendar server-side.
  * Request: { from: "YYYY-MM-DD", to: "YYYY-MM-DD" }
  * Expected response: { "YYYY-MM-DD": ["am", "mid", "pm"], ... }
  * Sundays absent. No client-side availability generation, ever.

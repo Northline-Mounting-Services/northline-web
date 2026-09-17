@@ -740,16 +740,9 @@ Do not rediscover booking architecture from scratch.
 
 Booking creation is complete and production-verified.
 
-Start with:
+Current next steps:
 
-**MIGRATE AVAILABILITY FROM CAL.COM TO GOOGLE CALENDAR**
-
-Primary targets:
-
-1. current Admin availability implementation
-2. Google FreeBusy helper
-3. `HOME_STATE` availability snapshot
-4. Web `/api/calculator-availability`
-5. homepage `TODAY / NEXT AVAILABLE`
-
-Keep the existing response/UI contracts wherever practical.
+1. verify Google OAuth consent app remains Production / Published
+2. preserve the current Google Calendar booking and availability contracts
+3. later add package-offer booking against the same calendar source
+4. keep homepage and Calculator availability on the same calendar truth
