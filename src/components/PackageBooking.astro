@@ -1,0 +1,56 @@
+---
+/**
+ * Northline package booking popup — mount ONCE per page, open from any
+ * package CTA on that page.
+ *
+ * Declarative:
+ *   <article data-nl-package-id="NL-PKG-MULTI"
+ *            data-nl-package-category="MULTIPLE TVs"
+ *            data-nl-package-price="from $178.20"
+ *            data-nl-package-description="...">
+ *     <button type="button" class="nl-cta" data-nl-package-open>…</button>
+ *   </article>
+ *   <PackageBooking />
+ *
+ * Imperative:
+ *   window.openPackageBooking({ packageId, category, priceLabel, description })
+ *
+ * The popup displays priceLabel verbatim and prices nothing itself.
+ */
+import '../styles/calculator.css';
+import '../styles/package-booking.css';
+---
+
+<div data-nl-pkg-root>
+  <dialog class="nl-calc" aria-label="Book installation">
+    <div class="nl-calc__frame">
+      <header class="nl-calc__head">
+        <div class="nl-calc__brand">
+          <p class="nl-eyebrow">Northline</p>
+          <p class="nl-calc__stage-title">Book installation</p>
+        </div>
+        <div class="nl-calc__head-actions">
+          <button type="button" class="nl-ghost nl-close" data-nl-pkg-close aria-label="Close booking">&#215;</button>
+        </div>
+      </header>
+
+      <div class="nl-pkg__summary" data-nl-pkg-summary></div>
+
+      <div class="nl-calc__body">
+        <div class="nl-calc__main" data-nl-pkg-main>
+          <noscript>
+            <p class="nl-lede">
+              Booking needs JavaScript. Text us at
+              <a href="sms:+14704709331">(470) 470-9331</a> and we'll book your installation.
+            </p>
+          </noscript>
+        </div>
+      </div>
+    </div>
+  </dialog>
+</div>
+
+<script>
+  import { initPackageBooking } from '../scripts/package-booking.js';
+  document.querySelectorAll('[data-nl-pkg-root]').forEach((root) => initPackageBooking(root));
+</script>

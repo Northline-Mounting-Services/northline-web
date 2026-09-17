@@ -6,6 +6,9 @@ import type {
 import {
   canonicalRepriceCalculatorQuote,
 } from './lib/calculator/canonical-pricing';
+import {
+  isAllowedPackageBookingId,
+} from './data/package-booking-catalog';
 
 interface AssetFetcher {
   fetch(request: Request): Promise<Response>;
@@ -287,6 +290,23 @@ interface CalculatorBookingPayload {
   } | null;
 }
 
+interface PackageBookingPayload {
+  requestId?: string;
+  packageId?: string;
+  date?: string;
+  windowCode?: string;
+  customer?: {
+    name?: string;
+    phone?: string;
+    address1?: string;
+    address2?: string;
+    city?: string;
+    state?: string;
+    notes?: string;
+  } | null;
+}
+
+
 const E164_US_PHONE =
   /^\+1[2-9]\d{2}[2-9]\d{6}$/;
 
@@ -478,6 +498,174 @@ function validateCalculatorBooking(
       notes,
     },
     tvs: payload.quote.tvs,
+  };
+}
+
+function normalizePackagePhone(
+  value: unknown,
+): string {
+  if (typeof value !== 'string') {
+    throw new Error('invalid_phone');
+  }
+
+  let digits = value.replace(/\D/g, '');
+
+  if (
+    digits.length === 11 &&
+    digits.startsWith('1')
+  ) {
+    digits = digits.slice(1);
+  }
+
+  if (!/^[2-9]\d{9}$/.test(digits)) {
+    throw new Error('invalid_phone');
+  }
+
+  return `+1${digits}`;
+}
+
+function validatePackageBooking(
+  payload: PackageBookingPayload,
+): {
+  requestId: string;
+  packageId: string;
+  phone: string;
+  date: string;
+  windowCode: 'am' | 'mid' | 'pm';
+  customer: {
+    name: string;
+    phone: string;
+    streetAddress: string;
+    address2: string | null;
+    city: string;
+    state: 'GA';
+    notes: string | null;
+  };
+} {
+  if (
+    !payload ||
+    typeof payload !== 'object' ||
+    Array.isArray(payload)
+  ) {
+    throw new Error(
+      'invalid_booking_request',
+    );
+  }
+
+  if (
+    typeof payload.requestId !== 'string' ||
+    !UUID_V4.test(payload.requestId)
+  ) {
+    throw new Error(
+      'invalid_request_id',
+    );
+  }
+
+  if (
+    typeof payload.packageId !== 'string' ||
+    !/^[A-Za-z0-9][A-Za-z0-9_-]{0,119}$/.test(
+      payload.packageId,
+    )
+  ) {
+    throw new Error(
+      'invalid_package_id',
+    );
+  }
+
+  if (
+    !isAllowedPackageBookingId(
+      payload.packageId,
+    )
+  ) {
+    throw new Error(
+      'package_not_found',
+    );
+  }
+
+  if (
+    typeof payload.date !== 'string' ||
+    !isValidBookingDate(payload.date)
+  ) {
+    throw new Error(
+      'invalid_booking_date',
+    );
+  }
+
+  if (
+    payload.windowCode !== 'am' &&
+    payload.windowCode !== 'mid' &&
+    payload.windowCode !== 'pm'
+  ) {
+    throw new Error('invalid_window');
+  }
+
+  if (
+    !payload.customer ||
+    typeof payload.customer !== 'object' ||
+    Array.isArray(payload.customer)
+  ) {
+    throw new Error('invalid_customer');
+  }
+
+  const name =
+    normalizeCustomerText(
+      payload.customer.name,
+      100,
+    );
+
+  const streetAddress =
+    normalizeCustomerText(
+      payload.customer.address1,
+      140,
+    );
+
+  const address2 =
+    normalizeCustomerText(
+      payload.customer.address2,
+      80,
+    );
+
+  const city =
+    normalizeCustomerText(
+      payload.customer.city,
+      80,
+    );
+
+  const notes =
+    normalizeCustomerText(
+      payload.customer.notes,
+      500,
+    );
+
+  if (
+    !name ||
+    !streetAddress ||
+    !city ||
+    payload.customer.state !== 'GA'
+  ) {
+    throw new Error('invalid_customer');
+  }
+
+  const phone =
+    normalizePackagePhone(
+      payload.customer.phone,
+    );
+
+  return {
+    requestId: payload.requestId,
+    packageId: payload.packageId,
+    phone,
+    date: payload.date,
+    windowCode: payload.windowCode,
+    customer: {
+      name,
+      phone,
+      streetAddress,
+      address2,
+      city,
+      state: 'GA',
+      notes,
+    },
   };
 }
 
@@ -937,6 +1125,131 @@ export default {
           {
             ok: false,
             error: 'Lead could not be saved',
+          },
+          500,
+        );
+      }
+    }
+
+    if (
+      url.pathname === '/api/package-booking' &&
+      request.method === 'POST'
+    ) {
+      try {
+        const contentLength =
+          Number(
+            request.headers.get(
+              'content-length',
+            ) ?? 0,
+          );
+
+        if (
+          Number.isFinite(contentLength) &&
+          contentLength > 65536
+        ) {
+          return jsonResponse(
+            {
+              ok: false,
+              error: 'request_too_large',
+            },
+            413,
+          );
+        }
+
+        const raw =
+          await request.json() as
+            PackageBookingPayload;
+
+        const booking =
+          validatePackageBooking(raw);
+
+        const adminResponse =
+          await env.NORTHLINE_ADMIN.fetch(
+            new Request(
+              'https://northline-admin/internal/package-booking',
+              {
+                method: 'POST',
+                headers: {
+                  'content-type':
+                    'application/json',
+                  'x-northline-internal-token':
+                    env.INTERNAL_API_TOKEN,
+                },
+                body: JSON.stringify({
+                  source: 'package',
+                  requestId:
+                    booking.requestId,
+                  packageId:
+                    booking.packageId,
+                  phone:
+                    booking.phone,
+                  date:
+                    booking.date,
+                  windowCode:
+                    booking.windowCode,
+                  customer:
+                    booking.customer,
+                }),
+              },
+            ),
+          );
+
+        const adminBody =
+          await adminResponse.text();
+
+        return new Response(
+          adminBody,
+          {
+            status: adminResponse.status,
+            headers: {
+              'content-type':
+                'application/json; charset=utf-8',
+              'cache-control': 'no-store',
+            },
+          },
+        );
+      } catch (error) {
+        const message =
+          error instanceof Error
+            ? error.message
+            : 'invalid_booking_request';
+
+        if (message === 'package_not_found') {
+          return jsonResponse(
+            {
+              ok: false,
+              error: message,
+            },
+            404,
+          );
+        }
+
+        if (
+          message === 'invalid_booking_request' ||
+          message === 'invalid_request_id' ||
+          message === 'invalid_package_id' ||
+          message === 'invalid_phone' ||
+          message === 'invalid_booking_date' ||
+          message === 'invalid_window' ||
+          message === 'invalid_customer'
+        ) {
+          return jsonResponse(
+            {
+              ok: false,
+              error: message,
+            },
+            400,
+          );
+        }
+
+        console.error(
+          'Package booking transport failed',
+        );
+
+        return jsonResponse(
+          {
+            ok: false,
+            error: 'booking_request_failed',
           },
           500,
         );

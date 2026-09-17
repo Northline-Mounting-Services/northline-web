@@ -1,0 +1,32 @@
+/* Package booking popup — additions only.
+   Every shell, field, day, slot, error and button style is inherited from
+   calculator.css so the two popups stay visually identical. */
+
+/* No order rail — the package summary carries the price, so the body is
+   a single column at every width. */
+[data-nl-pkg-root] .nl-calc__body { grid-template-columns: minmax(0, 1fr); }
+
+.nl-pkg__summary {
+  flex: 0 0 auto;
+  padding: clamp(18px, 3vw, 26px) clamp(18px, 3vw, 34px);
+  border-bottom: 1px solid #dcddd8;
+  background: #e7e8e4;
+}
+.nl-pkg__category { margin: 8px 0 0; font-size: 10.5px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #202321; }
+.nl-pkg__price { margin: 6px 0 0; font-size: clamp(24px, 3.4vw, 30px); font-weight: 500; letter-spacing: -0.03em; line-height: 1; font-variant-numeric: tabular-nums; }
+.nl-pkg__desc { margin: 12px 0 0; max-width: 46em; font-size: 14.5px; line-height: 1.55; color: #5e615f; text-wrap: pretty; }
+
+.nl-pkg__fields {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(232px, 1fr));
+  gap: 4px 16px;
+}
+.nl-pkg__field { min-width: 0; }
+.nl-pkg__field--wide { margin-top: 4px; }
+.nl-pkg__textarea { min-height: 84px; resize: vertical; line-height: 1.45; padding-top: 12px; }
+.nl-pkg__field .nl-input[readonly] { color: #747875; background: #edeeea; }
+
+@media (max-width: 899px) {
+  .nl-pkg__fields { grid-template-columns: minmax(0, 1fr); }
+}
