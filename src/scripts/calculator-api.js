@@ -5,10 +5,9 @@
  * - published pricing: /api/calculator-pricing
  * - lead persistence: /api/calculator-lead
  *
- * Still pending:
- * - Cal.com-backed booking creation
+ * Implemented booking:
+ * - Google Calendar-backed booking creation through /api/calculator-booking
  *
- * Pending operations reject instead of returning fake success.
  * Secrets stay server-side.
  */
 
@@ -19,8 +18,8 @@ export const ENDPOINTS = {
   leadUpsert: '/api/calculator-lead',
   // Arrival-window availability from the shared Cal.com snapshot in HOME_STATE.
   availability: '/api/calculator-availability',
-  // TODO(northline): confirm real route — booking creation through Cal.com, server-side.
-  createBooking: null
+  // Confirmed booking creation through the Northline server-side booking engine.
+  createBooking: '/api/calculator-booking'
 };
 
 class IntegrationRequired extends Error {
@@ -107,7 +106,7 @@ export async function loadBookingAvailability(range) {
 }
 
 /**
- * Booking creation through Cal.com, server-side.
+ * Booking creation through Google Calendar, server-side.
  * Request: { quoteId, phone, date: "YYYY-MM-DD", windowCode: "am"|"mid"|"pm", quote }
  * Expected response: { bookingId: string }
  * Only a resolved call carrying a bookingId may redirect to /paul.
