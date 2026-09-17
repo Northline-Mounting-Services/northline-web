@@ -1,0 +1,115 @@
+---
+import "../styles/paul.css";
+
+const PORTRAIT = "https://static.wixstatic.com/media/ef62de_040764688b8a441ea02a33890c19f446~mv2.png";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Appointment booked &mdash; Northline Mounting Services</title>
+  </head>
+
+  <body>
+    <main class="nl-paul">
+      <div class="nl-paul__shell">
+
+        <section class="nl-paul__confirm">
+          <p class="nl-paul__status">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="12" cy="12" r="9.25" stroke="currentColor" stroke-width="1.5" />
+              <path d="M8 12.4L10.9 15.2L16.2 9.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span>Confirmed</span>
+          </p>
+          <h1 class="nl-paul__h1">Your appointment is booked.</h1>
+          <p class="nl-paul__lede">Paul is your installer. Save his contact now so you can reach him directly about your installation.</p>
+        </section>
+
+        <section class="nl-paul__tech">
+          <figure class="nl-paul__portrait">
+            <img src={PORTRAIT} alt="Paul, Northline TV mounting specialist" loading="eager" decoding="async" />
+          </figure>
+
+          <div class="nl-paul__card">
+            <p class="nl-paul__kicker">Your technician</p>
+            <p class="nl-paul__name">Paul</p>
+            <p class="nl-paul__role">Your TV Mounting Specialist</p>
+
+            <div class="nl-paul__actions">
+              <button class="nl-paul__primary" type="button" data-save-contact>
+                <span>Save to Contacts</span>
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M12 4V15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                  <path d="M7.5 10.5L12 15L16.5 10.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M4.5 18.5H19.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                </svg>
+              </button>
+
+              <div class="nl-paul__secondary">
+                <a class="nl-paul__btn" href="tel:+14704709331,5" aria-label="Call Paul at 470-470-9331, extension 5">
+                  <span>Call</span>
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M6.2 4.5H9.1L10.4 8.2L8.6 9.6C9.4 11.6 11.1 13.3 13.1 14.1L14.5 12.3L18.2 13.6V16.5C18.2 17.6 17.3 18.5 16.2 18.4C10.2 17.9 5.6 13.3 5.2 7.4C5.1 6.3 6 5.4 6.2 4.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+                  </svg>
+                </a>
+                <a class="nl-paul__btn" href="sms:+14704709331" aria-label="Send a text message to Northline at 470-470-9331">
+                  <span>Send Message</span>
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M4.5 6.2C4.5 5.5 5.1 5 5.8 5H18.2C18.9 5 19.5 5.5 19.5 6.2V14.4C19.5 15.1 18.9 15.7 18.2 15.7H9.6L5.8 19V15.7C5.1 15.7 4.5 15.1 4.5 14.4V6.2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+            <p class="nl-paul__ext">(470) 470-9331 &middot; ext. 5</p>
+          </div>
+        </section>
+
+        <footer class="nl-paul__site">
+          <p class="nl-paul__kicker">Northline Mounting Services</p>
+          <a href="https://atltvmount.com">www.atltvmount.com</a>
+        </footer>
+
+      </div>
+    </main>
+
+    <script>
+      const VCARD = [
+        "BEGIN:VCARD",
+        "VERSION:3.0",
+        "N:;PAUL TV Mounting;;;",
+        "FN:PAUL TV Mounting",
+        "ORG:Northline Mounting Services",
+        "TITLE:Your TV Mounting Specialist",
+        "TEL;TYPE=CELL,VOICE:+14704709331,5",
+        "EMAIL;TYPE=INTERNET:info@atltvmount.com",
+        "URL:https://atltvmount.com/calculator",
+        "END:VCARD",
+      ].join("\r\n");
+
+      document.querySelector("[data-save-contact]")?.addEventListener("click", () => {
+        const url = URL.createObjectURL(new Blob([VCARD], { type: "text/vcard;charset=utf-8" }));
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "Paul-Northline-Mounting-Services.vcf";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      });
+    </script>
+
+    <style is:global>
+      html, body {
+        margin: 0;
+        min-height: 100%;
+        background: #f2f2ef;
+      }
+      body { font-family: "Helvetica Neue", Arial, sans-serif; }
+    </style>
+  </body>
+</html>

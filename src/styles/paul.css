@@ -1,0 +1,218 @@
+/* /paul — post-booking confirmation + technician contact.
+   Tokens mirror the Northline home sheet; scoped so this page cannot
+   disturb production styles. Fold into the shared token sheet on promotion. */
+
+.nl-paul {
+  --nl-bg: #F2F2EF;
+  --nl-ink: #202321;
+  --nl-ink-2: #747875;
+  --nl-surface: #E7E8E4;
+  --nl-accent: #536B64;
+  --nl-accent-dark: #47594F;
+  --nl-rule: #DCDDD8;
+  --nl-rule-strong: #D3D5CF;
+  --nl-on-accent: #F6F6F3;
+  --nl-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  background: var(--nl-bg);
+  color: var(--nl-ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.4;
+  padding:
+    calc(clamp(24px, 7vw, 56px) + env(safe-area-inset-top))
+    calc(clamp(20px, 6vw, 48px) + env(safe-area-inset-right))
+    calc(clamp(48px, 11vw, 88px) + env(safe-area-inset-bottom))
+    calc(clamp(20px, 6vw, 48px) + env(safe-area-inset-left));
+  -webkit-font-smoothing: antialiased;
+}
+.nl-paul *, .nl-paul *::before, .nl-paul *::after { box-sizing: border-box; }
+.nl-paul__shell { max-width: 640px; margin: 0 auto; }
+
+.nl-paul__kicker {
+  margin: 0;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--nl-ink-2);
+}
+
+/* ---------- confirmation ---------- */
+
+.nl-paul__confirm { margin-top: 0; }
+.nl-paul__status {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--nl-accent);
+}
+.nl-paul__status svg { display: block; width: 18px; height: 18px; flex: 0 0 auto; }
+.nl-paul__status span {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.nl-paul__h1 {
+  margin: clamp(14px, 3vw, 18px) 0 0;
+  max-width: 14em;
+  font-size: clamp(32px, 8vw, 46px);
+  font-weight: 500;
+  letter-spacing: -0.026em;
+  line-height: 1.08;
+  text-wrap: pretty;
+}
+.nl-paul__lede {
+  margin: clamp(12px, 3vw, 16px) 0 0;
+  max-width: 34em;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--nl-ink-2);
+  text-wrap: pretty;
+}
+
+/* ---------- technician ---------- */
+
+.nl-paul__tech {
+  margin-top: clamp(34px, 8vw, 48px);
+  max-width: 640px;
+  display: grid;
+  gap: clamp(20px, 3vw, 28px);
+  align-items: start;
+}
+
+.nl-paul__portrait {
+  margin: 0;
+  width: 100%;
+  align-self: start;
+  position: relative;
+  background-color: var(--nl-surface);
+  border-radius: 3px;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  min-width: 0;
+}
+.nl-paul__portrait img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.nl-paul__card {
+  background: var(--nl-surface);
+  border-radius: 3px;
+  padding: clamp(22px, 4vw, 30px);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.nl-paul__name {
+  margin: 12px 0 0;
+  font-size: clamp(34px, 9vw, 44px);
+  font-weight: 500;
+  letter-spacing: -0.034em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.nl-paul__role {
+  margin: 10px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--nl-ink-2);
+}
+
+.nl-paul__actions {
+  margin-top: clamp(22px, 4vw, 28px);
+  display: grid;
+  gap: 10px;
+}
+
+.nl-paul__primary {
+  font: inherit;
+  cursor: pointer;
+  border: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  min-height: 60px;
+  padding: 18px 20px;
+  background: var(--nl-accent);
+  color: var(--nl-on-accent);
+  font-size: 17px;
+  font-weight: 500;
+  border-radius: 3px;
+  text-align: left;
+  text-decoration: none;
+  transition: background-color 140ms ease;
+}
+.nl-paul__primary:hover { background: var(--nl-accent-dark); }
+.nl-paul__primary svg { display: block; width: 22px; height: 22px; flex: 0 0 auto; }
+
+.nl-paul__secondary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+}
+.nl-paul__btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 56px;
+  padding: 14px 18px;
+  border: 1px solid var(--nl-rule-strong);
+  border-radius: 3px;
+  background: transparent;
+  color: var(--nl-ink);
+  font-size: 16px;
+  text-decoration: none;
+  transition: border-color 140ms ease, color 140ms ease;
+}
+.nl-paul__btn:hover { border-color: var(--nl-accent); color: var(--nl-accent); }
+.nl-paul__btn svg { display: block; width: 20px; height: 20px; flex: 0 0 auto; color: var(--nl-ink-2); }
+.nl-paul__btn:hover svg { color: var(--nl-accent); }
+
+.nl-paul__primary:focus-visible,
+.nl-paul__btn:focus-visible,
+.nl-paul__site a:focus-visible { outline: 2px solid var(--nl-accent); outline-offset: 3px; }
+
+.nl-paul__ext {
+  margin: 14px 0 0;
+  font-family: var(--nl-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--nl-ink-2);
+}
+
+/* ---------- footer line ---------- */
+
+.nl-paul__site {
+  margin-top: clamp(30px, 7vw, 44px);
+  padding-top: 18px;
+  border-top: 1px solid var(--nl-rule);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.nl-paul__site a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 15px;
+  color: var(--nl-ink);
+  text-decoration: none;
+  transition: color 140ms ease;
+}
+.nl-paul__site a:hover { color: var(--nl-accent); }
+
+@media (prefers-reduced-motion: reduce) {
+  .nl-paul * { transition: none !important; animation: none !important; }
+}
