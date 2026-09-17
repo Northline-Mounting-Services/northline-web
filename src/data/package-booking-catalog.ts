@@ -6,10 +6,14 @@
  * minimal: it is only an allowlist preventing arbitrary package IDs from
  * reaching the booking engine.
  *
+ * Multi-TV quantity is part of the booking identity so the backend/calendar
+ * can distinguish 2, 3 and 4 TV visits without trusting a browser price.
  * One-TV service is intentionally absent. It belongs to the calculator flow.
  */
 export const PACKAGE_BOOKING_IDS = [
-  'NL-PKG-MULTI',
+  'NL-PKG-MULTI-2',
+  'NL-PKG-MULTI-3',
+  'NL-PKG-MULTI-4',
   'NL-PKG-FIRE',
   'NL-PKG-FRAME',
 ] as const;

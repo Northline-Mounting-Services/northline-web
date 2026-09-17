@@ -26,12 +26,23 @@ const fallbackMultiple = "$178";
       <span class="nl-price__value" data-price="one">{fallbackOne}</span>
     </p>
     <p class="nl-package__descriptor">Standard wall &middot; basic installation.</p>
-    <a class="nl-action" href="/ai-tv-quote">
-      <span>Get a price from a photo</span><span aria-hidden="true">&rarr;</span>
-    </a>
+    <button class="nl-action" type="button" data-nl-open>
+      <span>Calculate price &amp; book</span><span aria-hidden="true">&rarr;</span>
+    </button>
   </div>
 
-  <div class="nl-panel" id="nl-panel-multiple" role="tabpanel" aria-labelledby="nl-tab-multiple" data-panel="multiple" hidden>
+  <div
+    class="nl-panel"
+    id="nl-panel-multiple"
+    role="tabpanel"
+    aria-labelledby="nl-tab-multiple"
+    data-panel="multiple"
+    data-nl-package-id="NL-PKG-MULTI-2"
+    data-nl-package-category="2 TVs · one visit"
+    data-nl-package-price={`from ${fallbackMultiple}`}
+    data-nl-package-description="2 TVs in one visit · 65–85″ · simple wall · basic installation."
+    hidden
+  >
     <p class="nl-price">
       <span class="nl-price__label">from</span>
       <span class="nl-price__value" data-price="multiple">{fallbackMultiple}</span>
@@ -52,8 +63,8 @@ const fallbackMultiple = "$178";
       </div>
     </div>
 
-    <a class="nl-action" href="/book">
+    <button class="nl-action" type="button" data-nl-package-open>
       <span>Book installation</span><span aria-hidden="true">&rarr;</span>
-    </a>
+    </button>
   </div>
 </section>

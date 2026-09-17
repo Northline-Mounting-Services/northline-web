@@ -10,20 +10,39 @@ if (root) {
   const qtyLabel = root.querySelector("[data-qty-label]");
   const priceOne = root.querySelector('[data-price="one"]');
   const priceMulti = root.querySelector('[data-price="multiple"]');
+  const multiPanel = panels.get("multiple");
+  const multiDescription = multiPanel?.querySelector(".nl-package__descriptor");
 
   let state = { mode: "one", qty: 2, pricing: null };
 
   const money = (cents) =>
     "$" + (cents % 100 === 0 ? cents / 100 : (cents / 100).toFixed(2));
 
+  // PackageBooking display data comes from the page that opened it. The
+  // booking backend still receives packageId only; price/description here are
+  // display context, never booking authority.
+  function syncPackageBookingData() {
+    if (!multiPanel) return;
+
+    const shownPrice = priceMulti?.textContent?.trim();
+    const shownDescription = multiDescription?.textContent?.replace(/\s+/g, " ").trim();
+
+    multiPanel.dataset.nlPackageId = `NL-PKG-MULTI-${state.qty}`;
+    multiPanel.dataset.nlPackageCategory = `${state.qty} TVs · one visit`;
+    multiPanel.dataset.nlPackagePrice = shownPrice ? `from ${shownPrice}` : "";
+    multiPanel.dataset.nlPackageDescription = shownDescription || "";
+  }
+
   // Only ever writes over the HTML fallback once real pricing has arrived.
   function paintPrices() {
     const p = state.pricing;
-    if (!p) return;
-    const one = p.oneTv?.priceCents;
-    const multi = p.multipleTv?.[String(state.qty)]?.priceCents;
-    if (typeof one === "number") priceOne.textContent = money(one);
-    if (typeof multi === "number") priceMulti.textContent = money(multi);
+    if (p) {
+      const one = p.oneTv?.priceCents;
+      const multi = p.multipleTv?.[String(state.qty)]?.priceCents;
+      if (typeof one === "number") priceOne.textContent = money(one);
+      if (typeof multi === "number") priceMulti.textContent = money(multi);
+    }
+    syncPackageBookingData();
   }
 
   function setMode(mode) {
