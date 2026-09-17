@@ -3,6 +3,10 @@ import type {
   KVNamespace,
 } from '@cloudflare/workers-types';
 
+import {
+  canonicalRepriceCalculatorQuote,
+} from './lib/calculator/canonical-pricing';
+
 interface AssetFetcher {
   fetch(request: Request): Promise<Response>;
 }
@@ -17,6 +21,7 @@ interface Env {
   DB: D1Database;
   NORTHLINE_ADMIN: ServiceFetcher;
   GOOGLE_PLACES_API_KEY: string;
+  INTERNAL_API_TOKEN: string;
 }
 
 interface HomePricingSnapshot {
@@ -266,11 +271,60 @@ interface CalculatorLeadPayload {
   quote?: CalculatorLeadQuote;
 }
 
+interface CalculatorBookingPayload {
+  quoteId?: string | null;
+  phone?: string;
+  date?: string;
+  windowCode?: string;
+  customer?: (
+    CalculatorLeadCustomer & {
+      phone?: string;
+      state?: string;
+    }
+  ) | null;
+  quote?: {
+    tvs?: CalculatorLeadQuote['tvs'];
+  } | null;
+}
+
 const E164_US_PHONE =
   /^\+1[2-9]\d{2}[2-9]\d{6}$/;
 
 const UUID_V4 =
   /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+const DATE_ONLY =
+  /^\d{4}-\d{2}-\d{2}$/;
+
+function isValidBookingDate(
+  value: string,
+): boolean {
+  if (!DATE_ONLY.test(value)) {
+    return false;
+  }
+
+  const [year, month, day] =
+    value.split('-').map(Number);
+
+  const date = new Date(
+    Date.UTC(
+      year,
+      month - 1,
+      day,
+    ),
+  );
+
+  if (
+    date.getUTCFullYear() !== year ||
+    date.getUTCMonth() !== month - 1 ||
+    date.getUTCDate() !== day
+  ) {
+    return false;
+  }
+
+  // Monday-Saturday only.
+  return date.getUTCDay() !== 0;
+}
 
 function normalizeCustomerText(
   value: unknown,
@@ -293,6 +347,138 @@ function normalizeCustomerText(
   }
 
   return normalized;
+}
+
+function validateCalculatorBooking(
+  payload: CalculatorBookingPayload,
+): {
+  quoteId: string;
+  phone: string;
+  date: string;
+  windowCode: 'am' | 'mid' | 'pm';
+  customer: {
+    name: string;
+    phone: string;
+    streetAddress: string;
+    address2: string | null;
+    city: string;
+    state: 'GA';
+    notes: string | null;
+  };
+  tvs: CalculatorLeadQuote['tvs'];
+} {
+  if (
+    !payload ||
+    typeof payload !== 'object' ||
+    Array.isArray(payload)
+  ) {
+    throw new Error(
+      'invalid_booking_request',
+    );
+  }
+
+  if (
+    typeof payload.quoteId !== 'string' ||
+    !UUID_V4.test(payload.quoteId)
+  ) {
+    throw new Error('invalid_quote_id');
+  }
+
+  if (
+    typeof payload.phone !== 'string' ||
+    !E164_US_PHONE.test(payload.phone)
+  ) {
+    throw new Error('invalid_phone');
+  }
+
+  if (
+    typeof payload.date !== 'string' ||
+    !isValidBookingDate(payload.date)
+  ) {
+    throw new Error(
+      'invalid_booking_date',
+    );
+  }
+
+  if (
+    payload.windowCode !== 'am' &&
+    payload.windowCode !== 'mid' &&
+    payload.windowCode !== 'pm'
+  ) {
+    throw new Error('invalid_window');
+  }
+
+  if (
+    !payload.customer ||
+    typeof payload.customer !== 'object' ||
+    Array.isArray(payload.customer)
+  ) {
+    throw new Error('invalid_customer');
+  }
+
+  const name =
+    normalizeCustomerText(
+      payload.customer.name,
+      100,
+    );
+
+  const streetAddress =
+    normalizeCustomerText(
+      payload.customer.streetAddress,
+      140,
+    );
+
+  const address2 =
+    normalizeCustomerText(
+      payload.customer.address2,
+      80,
+    );
+
+  const city =
+    normalizeCustomerText(
+      payload.customer.city,
+      80,
+    );
+
+  const notes =
+    normalizeCustomerText(
+      payload.customer.notes,
+      500,
+    );
+
+  if (
+    !name ||
+    !streetAddress ||
+    !city
+  ) {
+    throw new Error('invalid_customer');
+  }
+
+  if (
+    !payload.quote ||
+    typeof payload.quote !== 'object' ||
+    Array.isArray(payload.quote) ||
+    !Array.isArray(payload.quote.tvs)
+  ) {
+    throw new Error('invalid_quote');
+  }
+
+  return {
+    quoteId: payload.quoteId,
+    phone: payload.phone,
+    date: payload.date,
+    windowCode: payload.windowCode,
+    customer: {
+      name,
+      phone: payload.phone,
+      streetAddress,
+      address2,
+      city,
+      state: 'GA',
+      notes,
+    },
+    tvs: payload.quote.tvs,
+  };
 }
 
 function validateCalculatorLead(
@@ -753,6 +939,237 @@ export default {
             error: 'Lead could not be saved',
           },
           500,
+        );
+      }
+    }
+
+    if (
+      url.pathname === '/api/calculator-booking' &&
+      request.method === 'POST'
+    ) {
+      try {
+        const contentLength =
+          Number(
+            request.headers.get(
+              'content-length',
+            ) ?? 0,
+          );
+
+        if (
+          Number.isFinite(contentLength) &&
+          contentLength > 65536
+        ) {
+          return new Response(
+            JSON.stringify({
+              ok: false,
+              error: 'request_too_large',
+            }),
+            {
+              status: 413,
+              headers: {
+                'content-type':
+                  'application/json; charset=utf-8',
+                'cache-control':
+                  'no-store',
+              },
+            },
+          );
+        }
+
+        const raw =
+          await request.json() as
+            CalculatorBookingPayload;
+
+        const booking =
+          validateCalculatorBooking(raw);
+
+        const existingLead =
+          await env.DB
+            .prepare(
+              `
+                SELECT phone_e164
+                FROM calculator_leads
+                WHERE quote_id = ?
+                LIMIT 1
+              `,
+            )
+            .bind(booking.quoteId)
+            .first<{
+              phone_e164: string;
+            }>();
+
+        if (
+          !existingLead ||
+          existingLead.phone_e164 !==
+            booking.phone
+        ) {
+          throw new Error(
+            'invalid_quote_id',
+          );
+        }
+
+        /*
+         * Monetary fields from the browser are ignored.
+         * Rebuild the quote from current Published
+         * pricing before anything reaches Admin.
+         */
+        const canonicalQuote =
+          await canonicalRepriceCalculatorQuote(
+            env.DB,
+            booking.tvs,
+          );
+
+        const adminResponse =
+          await env.NORTHLINE_ADMIN.fetch(
+            new Request(
+              'https://northline-admin/internal/calculator-booking',
+              {
+                method: 'POST',
+                headers: {
+                  'content-type':
+                    'application/json',
+                  'x-northline-internal-token':
+                    env.INTERNAL_API_TOKEN,
+                },
+                body: JSON.stringify({
+                  source: 'calculator',
+                  quoteId:
+                    booking.quoteId,
+                  phone: booking.phone,
+                  date: booking.date,
+                  windowCode:
+                    booking.windowCode,
+                  customer:
+                    booking.customer,
+                  canonicalQuote,
+                }),
+              },
+            ),
+          );
+
+        const adminBody =
+          await adminResponse.text();
+
+        if (!adminResponse.ok) {
+          console.error(
+            'Admin calculator booking transport failed:',
+            adminResponse.status,
+          );
+
+          return new Response(
+            JSON.stringify({
+              ok: false,
+              error:
+                'booking_service_unavailable',
+            }),
+            {
+              status: 502,
+              headers: {
+                'content-type':
+                  'application/json; charset=utf-8',
+                'cache-control':
+                  'no-store',
+              },
+            },
+          );
+        }
+
+        /*
+         * Admin currently returns transport_only.
+         * There is deliberately no bookingId yet.
+         */
+        return new Response(
+          adminBody,
+          {
+            status: 200,
+            headers: {
+              'content-type':
+                'application/json; charset=utf-8',
+              'cache-control':
+                'no-store',
+            },
+          },
+        );
+      } catch (error) {
+        const message =
+          error instanceof Error
+            ? error.message
+            : 'invalid_booking_request';
+
+        if (
+          message ===
+            'invalid_booking_request' ||
+          message === 'invalid_quote_id' ||
+          message === 'invalid_phone' ||
+          message ===
+            'invalid_booking_date' ||
+          message === 'invalid_window' ||
+          message === 'invalid_customer' ||
+          message === 'invalid_quote' ||
+          message === 'incomplete_quote' ||
+          message ===
+            'pricing_item_not_found'
+        ) {
+          return new Response(
+            JSON.stringify({
+              ok: false,
+              error: message,
+            }),
+            {
+              status: 400,
+              headers: {
+                'content-type':
+                  'application/json; charset=utf-8',
+                'cache-control':
+                  'no-store',
+              },
+            },
+          );
+        }
+
+        if (
+          message ===
+            'published_pricing_not_found' ||
+          message ===
+            'client_lift_rule_not_found'
+        ) {
+          return new Response(
+            JSON.stringify({
+              ok: false,
+              error:
+                'pricing_unavailable',
+            }),
+            {
+              status: 503,
+              headers: {
+                'content-type':
+                  'application/json; charset=utf-8',
+                'cache-control':
+                  'no-store',
+              },
+            },
+          );
+        }
+
+        console.error(
+          'Calculator booking transport failed',
+        );
+
+        return new Response(
+          JSON.stringify({
+            ok: false,
+            error:
+              'booking_request_failed',
+          }),
+          {
+            status: 500,
+            headers: {
+              'content-type':
+                'application/json; charset=utf-8',
+              'cache-control':
+                'no-store',
+            },
+          },
         );
       }
     }
