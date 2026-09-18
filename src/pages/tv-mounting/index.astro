@@ -1,12 +1,12 @@
 ---
-import Header from "../components/Header.astro";
-import Footer from "../components/Footer.astro";
-import HomePackage from "../components/home/HomePackage.astro";
-import HomeAvailability from "../components/home/HomeAvailability.astro";
-import HomeTrust from "../components/home/HomeTrust.astro";
-import HomeReviews from "../components/home/HomeReviews.astro";
-import HomeExplore from "../components/home/HomeExplore.astro";
-import "../styles/home-test.css";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import HomePackage from "../../components/home/HomePackage.astro";
+import HomeAvailability from "../../components/home/HomeAvailability.astro";
+import HomeTrust from "../../components/home/HomeTrust.astro";
+import HomeReviews from "../../components/home/HomeReviews.astro";
+import HomeExplore from "../../components/home/HomeExplore.astro";
+import "../../styles/home-test.css";
 ---
 
 <!doctype html>
@@ -64,15 +64,15 @@ import "../styles/home-test.css";
         <HomeAvailability />
         <HomeTrust />
         <HomeReviews />
-        <HomeExplore />
+        <HomeExplore excludeHref="/tv-mounting" />
 
       </div>
     </main>
 
     <Footer />
 
-    <script src="../scripts/home-state.js"></script>
-<script src="../scripts/google-reviews.js"></script>
+    <script src="../../scripts/home-state.js"></script>
+<script src="../../scripts/google-reviews.js"></script>
   </body>
 </html>
 

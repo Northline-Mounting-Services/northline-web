@@ -4,7 +4,7 @@
 
 This document defines the shared implementation pattern for Northline pages under `/tv-mounting`.
 
-The approved `/test/` homepage is the visual source of truth.
+The approved `/tv-mounting/` page is the visual source of truth.
 
 Service pages are variations of the homepage layout, not independent page designs.
 
@@ -20,7 +20,7 @@ A service page must not link to itself in the Explore Northline service list.
 
 ## Visual source of truth
 
-Base route: `/test/`
+Base route: `/tv-mounting/`
 
 Shared structure:
 
@@ -56,7 +56,7 @@ Normally only the upper content changes:
 3. H1
 4. left card inside `.nl-focus`
 
-The media block and lower page structure remain based on `/test/`.
+The media block and lower page structure remain based on `/tv-mounting/`.
 
 ## Specialized cards
 
@@ -191,11 +191,11 @@ Example:
 
 `<HomeExplore excludeHref="/tv-mounting/above-fireplace" />`
 
-The homepage/test page does not exclude the Fireplace route.
+The `/tv-mounting/` base page excludes only its own `/tv-mounting` route.
 
 ## Creating another service page
 
-1. Start from `/test/`.
+1. Start from `/tv-mounting/`.
 2. Correct relative imports for the nested route.
 3. Keep the shared homepage structure intact.
 4. Change title, meta description and H1.
@@ -204,7 +204,7 @@ The homepage/test page does not exclude the Fireplace route.
 7. Use the existing Calculator or PackageBooking.
 8. Load prices only from Published APIs.
 9. Exclude the current route from HomeExplore.
-10. Compare the result visually with `/test/`.
+10. Compare the result visually with `/tv-mounting/`.
 
 Do not design the page from scratch.
 
@@ -233,11 +233,11 @@ Requirements:
 
 Implemented:
 
+- `/tv-mounting`
 - `/tv-mounting/above-fireplace`
 
 Planned:
 
-- `/tv-mounting`
 - `/tv-mounting/samsung-frame`
 - `/tv-mounting/large-tv`
 - `/tv-mounting/wire-concealment`
