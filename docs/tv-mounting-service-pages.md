@@ -193,6 +193,38 @@ Example:
 
 The `/tv-mounting/` base page excludes only its own `/tv-mounting` route.
 
+## Large TV page
+
+Route:
+
+- `/tv-mounting/large-tv`
+
+This page is not a package page.
+
+It uses two size-based modes:
+
+- `78–90″`
+  - fixed starting price from `/api/calculator-pricing`
+  - pricing key: `standard_tv.tv_size.78_90`
+  - client-lift savings from `clientLiftRule.true`
+  - display the savings as a positive amount with `Math.abs(...)`
+  - CTA opens the existing Calculator with `data-nl-open`
+
+- `90″+`
+  - no fixed price
+  - displays `QUOTE`
+  - CTA opens a prefilled SMS quote request
+  - the SMS asks for the TV model and a photo of the installation area
+
+Content rules:
+
+- do not use PackageBooking on this page
+- do not create package IDs for Large TV
+- do not hardcode the `78–90″` price or client-lift savings
+- keep the TV size at the end of the customer-facing description
+- availability is loaded from `/api/home-state`
+- do not modify the shared Calculator for this page
+
 ## Creating another service page
 
 1. Start from `/tv-mounting/`.
@@ -236,8 +268,8 @@ Implemented:
 - `/tv-mounting`
 - `/tv-mounting/above-fireplace`
 - `/tv-mounting/samsung-frame`
+- `/tv-mounting/large-tv`
 
 Planned:
 
-- `/tv-mounting/large-tv`
 - `/tv-mounting/wire-concealment`

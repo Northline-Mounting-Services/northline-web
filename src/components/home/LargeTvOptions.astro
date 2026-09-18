@@ -1,0 +1,224 @@
+<section
+  class="nl-package"
+  aria-labelledby="nl-large-tv-heading"
+  data-large-tv
+>
+  <h2 class="nl-kicker" id="nl-large-tv-heading">Large TV</h2>
+
+  <div class="nl-tabs" role="tablist" aria-label="Large TV installation">
+    <button
+      class="nl-tab is-active"
+      type="button"
+      role="tab"
+      aria-selected="true"
+      data-large-mode="priced"
+    >
+      78–90″
+    </button>
+
+    <button
+      class="nl-tab"
+      type="button"
+      role="tab"
+      aria-selected="false"
+      data-large-mode="quote"
+    >
+      90″+
+    </button>
+  </div>
+
+  <div class="nl-panel" data-large-panel="quote">
+    <p class="nl-price">
+      <span class="nl-price__value">QUOTE</span>
+    </p>
+
+    <p class="nl-package__descriptor">
+      Large TV mounting · Final price depends on TV model, weight and installation conditions · 90″+
+    </p>
+
+    <a class="nl-action" href="sms:+14704709331" data-large-quote>
+      <span>Get a quote</span>
+      <span aria-hidden="true">&rarr;</span>
+    </a>
+  </div>
+
+  <div class="nl-panel" data-large-panel="priced" hidden>
+    <p class="nl-price">
+      <span class="nl-price__value" data-large-price>&mdash;</span>
+    </p>
+
+    <p class="nl-package__descriptor">
+      Help lift the TV and save
+      <span data-large-savings>&mdash;</span>
+      · or choose a two-technician installation · 78–90″
+    </p>
+
+    <button class="nl-action" type="button" data-nl-open>
+      <span>Calculate price &amp; book</span>
+      <span aria-hidden="true">&rarr;</span>
+    </button>
+  </div>
+</section>
+
+<script>
+  const root =
+    document.querySelector<HTMLElement>("[data-large-tv]");
+
+  if (root) {
+    const tabs = Array.from(
+      root.querySelectorAll<HTMLButtonElement>("[data-large-mode]")
+    );
+
+    const panels = Array.from(
+      root.querySelectorAll<HTMLElement>("[data-large-panel]")
+    );
+
+    const price =
+      root.querySelector<HTMLElement>("[data-large-price]");
+
+    const savings =
+      root.querySelector<HTMLElement>("[data-large-savings]");
+
+    const quote =
+      root.querySelector<HTMLAnchorElement>("[data-large-quote]");
+
+    const setMode = (mode: string) => {
+      tabs.forEach((tab) => {
+        const active = tab.dataset.largeMode === mode;
+        tab.classList.toggle("is-active", active);
+        tab.setAttribute("aria-selected", String(active));
+      });
+
+      panels.forEach((panel) => {
+        panel.hidden = panel.dataset.largePanel !== mode;
+      });
+    };
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        setMode(tab.dataset.largeMode || "quote");
+      });
+    });
+
+    root
+      .querySelector('[role="tablist"]')
+      ?.addEventListener("keydown", (event) => {
+        if (!(event instanceof KeyboardEvent)) return;
+
+        if (
+          event.key !== "ArrowRight" &&
+          event.key !== "ArrowLeft"
+        ) {
+          return;
+        }
+
+        event.preventDefault();
+
+        const current = tabs.findIndex(
+          (tab) =>
+            tab.getAttribute("aria-selected") === "true"
+        );
+
+        const offset =
+          event.key === "ArrowRight" ? 1 : tabs.length - 1;
+
+        const next =
+          tabs[(current + offset) % tabs.length];
+
+        setMode(next.dataset.largeMode || "quote");
+        next.focus();
+      });
+
+    if (quote) {
+      const body =
+        'Hi, I’d like a quote for mounting a 90”+ TV. I can send the TV model and a photo of the installation area.';
+
+      quote.href =
+        `sms:+14704709331?&body=${encodeURIComponent(body)}`;
+    }
+
+    fetch("/api/calculator-pricing", {
+      headers: { accept: "application/json" }
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("pricing_unavailable");
+        }
+
+        return response.json();
+      })
+      .then((pricing) => {
+        const largeTvPrice =
+          pricing.items?.["standard_tv.tv_size.78_90"];
+
+        const clientLift =
+          pricing.clientLiftRule?.true;
+
+        if (
+          typeof largeTvPrice === "number" &&
+          price
+        ) {
+          price.textContent =
+            `$${Math.round(largeTvPrice)}`;
+        }
+
+        if (
+          typeof clientLift === "number" &&
+          savings
+        ) {
+          savings.textContent =
+            `$${Math.abs(Math.round(clientLift))}`;
+        }
+      })
+      .catch(() => {});
+
+    fetch("/api/home-state", {
+      headers: { accept: "application/json" }
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("home_state_unavailable");
+        }
+
+        return response.json();
+      })
+      .then((data) => {
+        if (!data?.ok) return;
+
+        const today =
+          document.querySelector<HTMLElement>(
+            '[data-avail="today"]'
+          );
+
+        const next =
+          document.querySelector<HTMLElement>(
+            '[data-avail="next"]'
+          );
+
+        const todayLabel =
+          data.availability?.today?.label;
+
+        const nextLabel =
+          data.availability?.next?.label;
+
+        if (
+          today &&
+          typeof todayLabel === "string" &&
+          todayLabel
+        ) {
+          today.textContent = todayLabel;
+        }
+
+        if (
+          next &&
+          typeof nextLabel === "string" &&
+          nextLabel
+        ) {
+          next.textContent = nextLabel;
+        }
+      })
+      .catch(() => {});
+
+    setMode("priced");
+  }
+</script>
