@@ -1,0 +1,90 @@
+---
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import FireplacePackage from "../../components/home/FireplacePackage.astro";
+import HomeAvailability from "../../components/home/HomeAvailability.astro";
+import HomeTrust from "../../components/home/HomeTrust.astro";
+import HomeReviews from "../../components/home/HomeReviews.astro";
+import HomeExplore from "../../components/home/HomeExplore.astro";
+import "../../styles/home-test.css";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Above Fireplace TV Mounting &mdash; Northline Mounting Services</title>
+    <meta
+      name="description"
+      content="Above-fireplace TV mounting with standard drywall pricing and fixed packages for brick, stone, tile and granite."
+    />
+  </head>
+
+  <body>
+    <Header />
+
+    <main class="nl-home">
+      <div class="nl-shell">
+
+
+        <h1 class="nl-h1">Above Fireplace TV Mounting</h1>
+
+        <div class="nl-proxy">
+          <!-- Reserved location slot. Detection is intentionally deferred for now. -->
+          <p class="nl-proxy__city is-pending" data-proxy-city>Locating…</p>
+          <p class="nl-proxy__label">Household proxy</p>
+        </div>
+
+        <div class="nl-focus">
+          <FireplacePackage />
+
+          <figure class="nl-media">
+            <div class="nl-media__frame">
+              <span class="nl-media__play" aria-hidden="true"></span>
+              <span class="nl-media__note">Installation clip &middot; muted</span>
+            </div>
+          </figure>
+        </div>
+
+        <!-- Call: its own side element, separate from the package/media pair.
+             Follows the Header's sms-btn editorial logic, not a pill button. -->
+        <div class="nl-call-row">
+          <a class="nl-call" href="tel:+14704709331" data-call>
+            <span class="nl-call__text">Call (470) 470-9331</span>
+            <span class="nl-call__arrow" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 12H19" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                <path d="M13 6L19 12L13 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+          </a>
+        </div>
+
+        <HomeAvailability />
+        <HomeTrust />
+        <HomeReviews />
+        <HomeExplore excludeHref="/tv-mounting/above-fireplace" />
+
+      </div>
+    </main>
+
+    <Footer />
+
+    <script src="../../scripts/home-state.js"></script>
+<script src="../../scripts/google-reviews.js"></script>
+  </body>
+</html>
+
+<style is:global>
+  html,
+  body {
+    margin: 0;
+    min-height: 100%;
+    background: #f2f2ef;
+  }
+
+  body {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+  }
+</style>

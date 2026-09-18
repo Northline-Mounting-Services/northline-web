@@ -1,10 +1,13 @@
 ---
+const { excludeHref } = Astro.props;
+
 const services = [
-  { label: "Fireplace TV mounting", href: "/tv-mounting/above-fireplace" },
+  { label: "TV mounting", href: "/tv-mounting" },
   { label: "Samsung Frame installation", href: "/tv-mounting/samsung-frame" },
-  { label: "TV mounting pricing", action: "calculator" },
-  { label: "Get a price from a photo", href: "/ai-tv-quote" }
-];
+  { label: "Above Fireplace TV mounting", href: "/tv-mounting/above-fireplace" },
+  { label: "Large TV mounting", href: "/tv-mounting/large-tv" },
+  { label: "Wire concealment", href: "/tv-mounting/wire-concealment" }
+].filter((item) => item.href !== excludeHref);
 
 const areas = [
   { label: "Alpharetta", href: "/tv-mounting/alpharetta" },
@@ -25,15 +28,9 @@ const areas = [
       <ul class="nl-index">
         {services.map((item) => (
           <li>
-            {item.action === "calculator" ? (
-              <button type="button" class="nl-index-action" data-nl-open>
-                <span>{item.label}</span><span aria-hidden="true">&rarr;</span>
-              </button>
-            ) : (
-              <a href={item.href}>
-                <span>{item.label}</span><span aria-hidden="true">&rarr;</span>
-              </a>
-            )}
+            <a href={item.href}>
+              <span>{item.label}</span><span aria-hidden="true">&rarr;</span>
+            </a>
           </li>
         ))}
       </ul>
