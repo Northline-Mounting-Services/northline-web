@@ -16,6 +16,8 @@ export const PACKAGE_BOOKING_IDS = [
   'NL-PKG-MULTI-4',
   'NL-PKG-FIRE',
   'NL-PKG-FRAME',
+  'NL-PKG-UNTITLED-PACKAGE-J3HC',
+  'NL-PKG-UNTITLED-PACKAGE-FQD8',
 ] as const;
 
 export type PackageBookingId =

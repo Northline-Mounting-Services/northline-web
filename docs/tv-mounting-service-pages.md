@@ -235,9 +235,9 @@ Implemented:
 
 - `/tv-mounting`
 - `/tv-mounting/above-fireplace`
+- `/tv-mounting/samsung-frame`
 
 Planned:
 
-- `/tv-mounting/samsung-frame`
 - `/tv-mounting/large-tv`
 - `/tv-mounting/wire-concealment`

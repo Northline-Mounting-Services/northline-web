@@ -1,0 +1,386 @@
+<section
+  class="nl-package"
+  aria-labelledby="nl-samsung-frame-package-heading"
+  data-samsung-frame-package
+>
+  <h2 class="nl-kicker" id="nl-samsung-frame-package-heading">Package</h2>
+
+  <div class="nl-tabs" role="tablist" aria-label="Samsung Frame installation">
+    <button
+      class="nl-tab is-active"
+      type="button"
+      role="tab"
+      aria-selected="true"
+      data-sf-mode="standard"
+    >
+      Custom
+    </button>
+
+    <button
+      class="nl-tab"
+      type="button"
+      role="tab"
+      aria-selected="false"
+      data-sf-mode="package"
+    >
+      Package
+    </button>
+  </div>
+
+  <div class="nl-panel" data-sf-panel="standard">
+    <p class="nl-price">
+      <span class="nl-price__label">from</span>
+      <span class="nl-price__value" data-sf-standard-price>&mdash;</span>
+    </p>
+
+    <p class="nl-package__descriptor">
+      Samsung Frame installation on drywall.
+    </p>
+
+    <button class="nl-action" type="button" data-nl-open>
+      <span>Calculate price &amp; book</span>
+      <span aria-hidden="true">&rarr;</span>
+    </button>
+  </div>
+
+  <div class="nl-panel" data-sf-panel="package" hidden>
+    <p class="nl-price">
+      <span class="nl-price__value" data-sf-package-price>&mdash;</span>
+    </p>
+
+    <p class="nl-package__descriptor" data-sf-package-description>
+      Package pricing is loading.
+    </p>
+
+    <div class="nl-qty">
+      <p class="nl-kicker">Option</p>
+
+      <div class="nl-qty__row">
+        <button
+          class="nl-chip is-active"
+          type="button"
+          aria-pressed="true"
+          data-sf-package-id="NL-PKG-UNTITLED-PACKAGE-J3HC"
+        >
+          HIDDEN
+        </button>
+
+        <button
+          class="nl-chip"
+          type="button"
+          aria-pressed="false"
+          data-sf-package-id="NL-PKG-UNTITLED-PACKAGE-FQD8"
+        >
+          FULL
+        </button>
+      </div>
+    </div>
+
+    <button class="nl-action" type="button" data-sf-book disabled>
+      <span>Book installation</span>
+      <span aria-hidden="true">&rarr;</span>
+    </button>
+  </div>
+</section>
+
+<script>
+  type PublicPackage = {
+    packageId: string;
+    name: string;
+    description: string;
+    priceCents: number;
+  };
+
+  type BookingWindow = Window & {
+    openPackageBooking?: (pkg: {
+      packageId: string;
+      category: string;
+      priceLabel: string;
+      description: string;
+    }) => void;
+  };
+
+  const root =
+    document.querySelector<HTMLElement>("[data-samsung-frame-package]");
+
+  if (root) {
+    const tabs = Array.from(
+      root.querySelectorAll<HTMLButtonElement>("[data-sf-mode]")
+    );
+
+    const panels = Array.from(
+      root.querySelectorAll<HTMLElement>("[data-sf-panel]")
+    );
+
+    const chips = Array.from(
+      root.querySelectorAll<HTMLButtonElement>("[data-sf-package-id]")
+    );
+
+    const standardPrice =
+      root.querySelector<HTMLElement>("[data-sf-standard-price]");
+
+    const packagePrice =
+      root.querySelector<HTMLElement>("[data-sf-package-price]");
+
+    const packageDescription =
+      root.querySelector<HTMLElement>("[data-sf-package-description]");
+
+    const book =
+      root.querySelector<HTMLButtonElement>("[data-sf-book]");
+
+    const packages = new Map<string, PublicPackage>();
+
+    let selectedPackage: PublicPackage | null = null;
+
+    const money = (cents: number) =>
+      "$" +
+      (cents % 100 === 0
+        ? String(cents / 100)
+        : (cents / 100).toFixed(2));
+
+    const setMode = (mode: string) => {
+      tabs.forEach((tab) => {
+        const active = tab.dataset.sfMode === mode;
+        tab.classList.toggle("is-active", active);
+        tab.setAttribute("aria-selected", String(active));
+      });
+
+      panels.forEach((panel) => {
+        panel.hidden = panel.dataset.sfPanel !== mode;
+      });
+    };
+
+    const selectPackage = (packageId: string) => {
+      chips.forEach((chip) => {
+        const active =
+          chip.dataset.sfPackageId === packageId;
+
+        chip.classList.toggle("is-active", active);
+        chip.setAttribute("aria-pressed", String(active));
+      });
+
+      const pkg = packages.get(packageId);
+
+      if (!pkg) {
+        selectedPackage = null;
+
+        if (packagePrice) packagePrice.textContent = "—";
+
+        if (packageDescription) {
+          packageDescription.textContent =
+            "Package pricing is temporarily unavailable.";
+        }
+
+        if (book) book.disabled = true;
+        return;
+      }
+
+      selectedPackage = pkg;
+
+      if (packagePrice) {
+        packagePrice.textContent = money(pkg.priceCents);
+      }
+
+      if (packageDescription) {
+        packageDescription.textContent = pkg.description;
+      }
+
+      if (book) book.disabled = false;
+    };
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        setMode(tab.dataset.sfMode || "standard");
+      });
+    });
+
+    root
+      .querySelector('[role="tablist"]')
+      ?.addEventListener("keydown", (event) => {
+        if (!(event instanceof KeyboardEvent)) return;
+
+        if (
+          event.key !== "ArrowRight" &&
+          event.key !== "ArrowLeft"
+        ) {
+          return;
+        }
+
+        event.preventDefault();
+
+        const current =
+          tabs.findIndex(
+            (tab) =>
+              tab.getAttribute("aria-selected") === "true"
+          );
+
+        const offset =
+          event.key === "ArrowRight" ? 1 : tabs.length - 1;
+
+        const next =
+          tabs[(current + offset) % tabs.length];
+
+        setMode(next.dataset.sfMode || "standard");
+        next.focus();
+      });
+
+    chips.forEach((chip) => {
+      chip.addEventListener("click", () => {
+        const packageId = chip.dataset.sfPackageId;
+
+        if (packageId) {
+          selectPackage(packageId);
+        }
+      });
+    });
+
+    book?.addEventListener("click", () => {
+      if (!selectedPackage) return;
+
+      const open =
+        (window as BookingWindow).openPackageBooking;
+
+      if (typeof open !== "function") return;
+
+      open({
+        packageId: selectedPackage.packageId,
+        category: selectedPackage.name,
+        priceLabel: money(selectedPackage.priceCents),
+        description: selectedPackage.description
+      });
+    });
+
+    fetch("/api/calculator-pricing", {
+      headers: { accept: "application/json" }
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("pricing_unavailable");
+        }
+
+        return response.json();
+      })
+      .then((pricing) => {
+        const parts = [
+          pricing.base?.samsung_frame,
+          pricing.items?.["samsung_frame.screen_size.32_43"],
+          pricing.items?.["samsung_frame.location.standard"],
+          pricing.items?.["samsung_frame.wall.drywall"],
+          pricing.items?.["samsung_frame.one_connect.wireless"]
+        ];
+
+        if (
+          !parts.every(
+            (value) => typeof value === "number"
+          )
+        ) {
+          throw new Error("standard_price_unavailable");
+        }
+
+        const total = parts.reduce(
+          (sum, value) => sum + Number(value),
+          0
+        );
+
+        if (standardPrice) {
+          standardPrice.textContent =
+            `$${Math.round(total)}`;
+        }
+      })
+      .catch(() => {});
+
+    fetch("/api/packages", {
+      headers: { accept: "application/json" }
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("packages_unavailable");
+        }
+
+        return response.json();
+      })
+      .then((data) => {
+        if (!Array.isArray(data.packages)) {
+          throw new Error("invalid_packages");
+        }
+
+        data.packages.forEach((pkg: PublicPackage) => {
+          if (
+            pkg.packageId ===
+              "NL-PKG-UNTITLED-PACKAGE-J3HC" ||
+            pkg.packageId ===
+              "NL-PKG-UNTITLED-PACKAGE-FQD8"
+          ) {
+            packages.set(pkg.packageId, pkg);
+
+            const chip = chips.find(
+              (item) =>
+                item.dataset.sfPackageId === pkg.packageId
+            );
+
+            if (chip) {
+              chip.textContent = pkg.name;
+            }
+          }
+        });
+
+        selectPackage(
+          "NL-PKG-UNTITLED-PACKAGE-J3HC"
+        );
+      })
+      .catch(() => {
+        selectPackage(
+          "NL-PKG-UNTITLED-PACKAGE-J3HC"
+        );
+      });
+
+    fetch("/api/home-state", {
+      headers: { accept: "application/json" }
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("home_state_unavailable");
+        }
+
+        return response.json();
+      })
+      .then((data) => {
+        if (!data?.ok) return;
+
+        const today =
+          document.querySelector<HTMLElement>(
+            '[data-avail="today"]'
+          );
+
+        const next =
+          document.querySelector<HTMLElement>(
+            '[data-avail="next"]'
+          );
+
+        const todayLabel =
+          data.availability?.today?.label;
+
+        const nextLabel =
+          data.availability?.next?.label;
+
+        if (
+          today &&
+          typeof todayLabel === "string" &&
+          todayLabel
+        ) {
+          today.textContent = todayLabel;
+        }
+
+        if (
+          next &&
+          typeof nextLabel === "string" &&
+          nextLabel
+        ) {
+          next.textContent = nextLabel;
+        }
+      })
+      .catch(() => {});
+
+    setMode("standard");
+  }
+</script>
