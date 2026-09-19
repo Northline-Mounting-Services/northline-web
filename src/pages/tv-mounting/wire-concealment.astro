@@ -1,0 +1,140 @@
+---
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import WireConcealmentOptions from "../../components/home/WireConcealmentOptions.astro";
+import HomeAvailability from "../../components/home/HomeAvailability.astro";
+import HomeTrust from "../../components/home/HomeTrust.astro";
+import HomeReviews from "../../components/home/HomeReviews.astro";
+import HomeExplore from "../../components/home/HomeExplore.astro";
+import "../../styles/home-test.css";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width"
+    />
+
+    <title>
+      TV Wire Concealment &mdash; Northline Mounting Services
+    </title>
+
+    <meta
+      name="description"
+      content="TV wire concealment with custom cord-cover pricing and a fixed POWER installation package."
+    />
+  </head>
+
+  <body>
+    <Header />
+
+    <main class="nl-home">
+      <div class="nl-shell">
+
+        <h1 class="nl-h1">
+          TV Wire Concealment
+        </h1>
+
+        <div class="nl-proxy">
+          <p
+            class="nl-proxy__city is-pending"
+            data-proxy-city
+          >
+            Locating…
+          </p>
+
+          <p class="nl-proxy__label">
+            Household proxy
+          </p>
+        </div>
+
+        <div class="nl-focus">
+          <WireConcealmentOptions />
+
+          <figure class="nl-media">
+            <div class="nl-media__frame">
+              <span
+                class="nl-media__play"
+                aria-hidden="true"
+              ></span>
+
+              <span class="nl-media__note">
+                Installation clip &middot; muted
+              </span>
+            </div>
+          </figure>
+        </div>
+
+        <div class="nl-call-row">
+          <a
+            class="nl-call"
+            href="tel:+14704709331"
+            data-call
+          >
+            <span class="nl-call__text">
+              Call (470) 470-9331
+            </span>
+
+            <span
+              class="nl-call__arrow"
+              aria-hidden="true"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M4 12H19"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                />
+
+                <path
+                  d="M13 6L19 12L13 18"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+          </a>
+        </div>
+
+        <HomeAvailability />
+        <HomeTrust />
+        <HomeReviews />
+
+        <HomeExplore
+          excludeHref="/tv-mounting/wire-concealment"
+        />
+      </div>
+    </main>
+
+    <Footer />
+
+    <script src="../../scripts/home-state.js"></script>
+    <script src="../../scripts/google-reviews.js"></script>
+  </body>
+</html>
+
+<style is:global>
+  html,
+  body {
+    margin: 0;
+    min-height: 100%;
+    background: #f2f2ef;
+  }
+
+  body {
+    font-family:
+      "Helvetica Neue",
+      Arial,
+      sans-serif;
+  }
+</style>

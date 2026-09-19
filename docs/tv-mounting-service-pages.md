@@ -204,10 +204,12 @@ This page is not a package page.
 It uses two size-based modes:
 
 - `78–90″`
-  - fixed starting price from `/api/calculator-pricing`
-  - pricing key: `standard_tv.tv_size.78_90`
-  - client-lift savings from `clientLiftRule.true`
+  - starting price is calculated from Published `/api/calculator-pricing`
+  - formula: `standard_tv.tv_size.78_90 + clientLiftRule.true`
+  - this is displayed as `FROM`
+  - client-lift savings are also read from `clientLiftRule.true`
   - display the savings as a positive amount with `Math.abs(...)`
+  - do not hardcode either the starting price or savings
   - CTA opens the existing Calculator with `data-nl-open`
 
 - `90″+`
@@ -222,6 +224,52 @@ Content rules:
 - do not create package IDs for Large TV
 - do not hardcode the `78–90″` price or client-lift savings
 - keep the TV size at the end of the customer-facing description
+- availability is loaded from `/api/home-state`
+- do not modify the shared Calculator for this page
+
+## Multiple TV packages on `/tv-mounting`
+
+The `Multiple TVs` mode uses real Published Admin packages.
+
+Package data comes from `/api/packages`:
+
+- `2 TVs` → `NL-PKG-UNTITLED-PACKAGE-ETTA`
+- `3 TVs` → `NL-PKG-UNTITLED-PACKAGE-KE7Y`
+- `4 TVs` → `NL-PKG-UNTITLED-PACKAGE-MT9K`
+
+For Multiple TVs:
+
+- `packageId` comes from the Published Admin package
+- price comes from `/api/packages`
+- description comes from `/api/packages`
+- the browser does not calculate package pricing
+- synthetic `NL-PKG-MULTI-*` IDs are not used
+- `/api/home-state` remains responsible for One-TV starting price and availability
+
+## Wire Concealment page
+
+Route:
+
+- `/tv-mounting/wire-concealment`
+
+The page has two modes:
+
+- `CUSTOM`
+  - starting price comes from Published `/api/calculator-pricing`
+  - formula: `base.standard_tv + standard_tv.tv_size.up_to_50 + standard_tv.wire.cord_cover`
+  - CTA opens the existing Calculator with `data-nl-open`
+
+- `PACKAGE`
+  - uses the Published `POWER` package
+  - package ID: `NL-PKG-UNTITLED-PACKAGE-IUXK`
+  - name, price and description come from `/api/packages`
+  - CTA opens the existing PackageBooking flow
+
+Content and architecture rules:
+
+- do not hardcode CUSTOM or POWER prices
+- do not duplicate package descriptions in page logic
+- PackageBooking business identity is the Published Admin `packageId`
 - availability is loaded from `/api/home-state`
 - do not modify the shared Calculator for this page
 
@@ -269,7 +317,8 @@ Implemented:
 - `/tv-mounting/above-fireplace`
 - `/tv-mounting/samsung-frame`
 - `/tv-mounting/large-tv`
+- `/tv-mounting/wire-concealment`
 
 Planned:
 
-- `/tv-mounting/wire-concealment`
+- none

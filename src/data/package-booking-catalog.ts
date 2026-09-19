@@ -1,23 +1,30 @@
 /**
- * Package booking IDs that are allowed to create a calendar booking.
+ * Published package IDs that are allowed to create a calendar booking.
  *
- * Customer-facing package name, price and description stay on the page and
- * are read by the PackageBooking popup. This server-side list is deliberately
- * minimal: it is only an allowlist preventing arbitrary package IDs from
- * reaching the booking engine.
+ * Package identity comes from the Admin Published package catalog.
+ * Customer-facing name, price and description come from /api/packages.
+ * The backend trusts packageId only after it passes this allowlist.
  *
- * Multi-TV quantity is part of the booking identity so the backend/calendar
- * can distinguish 2, 3 and 4 TV visits without trusting a browser price.
- * One-TV service is intentionally absent. It belongs to the calculator flow.
+ * One-TV custom service is intentionally absent. It belongs to the
+ * Calculator flow.
  */
+
 export const PACKAGE_BOOKING_IDS = [
-  'NL-PKG-MULTI-2',
-  'NL-PKG-MULTI-3',
-  'NL-PKG-MULTI-4',
+  // Multiple TVs
+  'NL-PKG-UNTITLED-PACKAGE-ETTA',
+  'NL-PKG-UNTITLED-PACKAGE-KE7Y',
+  'NL-PKG-UNTITLED-PACKAGE-MT9K',
+
+  // Above fireplace
   'NL-PKG-FIRE',
   'NL-PKG-FRAME',
+
+  // Samsung Frame
   'NL-PKG-UNTITLED-PACKAGE-J3HC',
   'NL-PKG-UNTITLED-PACKAGE-FQD8',
+
+  // Wire concealment
+  'NL-PKG-UNTITLED-PACKAGE-IUXK',
 ] as const;
 
 export type PackageBookingId =

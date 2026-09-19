@@ -1,0 +1,460 @@
+<section
+  class="nl-package"
+  aria-labelledby="nl-wire-concealment-heading"
+  data-wire-concealment
+>
+  <h2 class="nl-kicker" id="nl-wire-concealment-heading">
+    Wire Concealment
+  </h2>
+
+  <div
+    class="nl-tabs"
+    role="tablist"
+    aria-label="Wire concealment options"
+  >
+    <button
+      class="nl-tab is-active"
+      type="button"
+      role="tab"
+      aria-selected="true"
+      data-wire-mode="custom"
+    >
+      Custom
+    </button>
+
+    <button
+      class="nl-tab"
+      type="button"
+      role="tab"
+      aria-selected="false"
+      data-wire-mode="package"
+    >
+      Package
+    </button>
+  </div>
+
+  <div
+    class="nl-panel"
+    data-wire-panel="custom"
+  >
+    <p class="nl-price">
+      <span class="nl-price__label">from</span>
+      <span
+        class="nl-price__value"
+        data-wire-custom-price
+      >&mdash;</span>
+    </p>
+
+    <p class="nl-package__descriptor">
+      Cord cover &middot; Up to 50&Prime;
+    </p>
+
+    <button
+      class="nl-action"
+      type="button"
+      data-nl-open
+    >
+      <span>Calculate price &amp; book</span>
+      <span aria-hidden="true">&rarr;</span>
+    </button>
+  </div>
+
+  <div
+    class="nl-panel"
+    data-wire-panel="package"
+    hidden
+  >
+    <p class="nl-price">
+      <span
+        class="nl-price__value"
+        data-wire-package-price
+      >&mdash;</span>
+    </p>
+
+    <p
+      class="nl-package__descriptor"
+      data-wire-package-description
+    >
+      Package pricing is loading.
+    </p>
+
+    <div class="nl-qty">
+      <p class="nl-kicker">Option</p>
+
+      <div class="nl-qty__row">
+        <button
+          class="nl-chip is-active"
+          type="button"
+          aria-pressed="true"
+          data-wire-package-id="NL-PKG-UNTITLED-PACKAGE-IUXK"
+        >
+          POWER
+        </button>
+      </div>
+    </div>
+
+    <button
+      class="nl-action"
+      type="button"
+      data-wire-book
+      disabled
+    >
+      <span>Book installation</span>
+      <span aria-hidden="true">&rarr;</span>
+    </button>
+  </div>
+</section>
+
+<script>
+  type PublicPackage = {
+    packageId: string;
+    name: string;
+    description: string;
+    priceCents: number;
+  };
+
+  type BookingWindow = Window & {
+    openPackageBooking?: (pkg: {
+      packageId: string;
+      category: string;
+      priceLabel: string;
+      description: string;
+    }) => void;
+  };
+
+  const root =
+    document.querySelector<HTMLElement>(
+      "[data-wire-concealment]"
+    );
+
+  if (root) {
+    const tabs = Array.from(
+      root.querySelectorAll<HTMLButtonElement>(
+        "[data-wire-mode]"
+      )
+    );
+
+    const panels = Array.from(
+      root.querySelectorAll<HTMLElement>(
+        "[data-wire-panel]"
+      )
+    );
+
+    const customPrice =
+      root.querySelector<HTMLElement>(
+        "[data-wire-custom-price]"
+      );
+
+    const packagePrice =
+      root.querySelector<HTMLElement>(
+        "[data-wire-package-price]"
+      );
+
+    const packageDescription =
+      root.querySelector<HTMLElement>(
+        "[data-wire-package-description]"
+      );
+
+    const packageChip =
+      root.querySelector<HTMLButtonElement>(
+        "[data-wire-package-id]"
+      );
+
+    const book =
+      root.querySelector<HTMLButtonElement>(
+        "[data-wire-book]"
+      );
+
+    let selectedPackage: PublicPackage | null = null;
+
+    const money = (cents: number) =>
+      "$" +
+      (cents % 100 === 0
+        ? String(cents / 100)
+        : (cents / 100).toFixed(2));
+
+    const setMode = (mode: string) => {
+      tabs.forEach((tab) => {
+        const active =
+          tab.dataset.wireMode === mode;
+
+        tab.classList.toggle(
+          "is-active",
+          active
+        );
+
+        tab.setAttribute(
+          "aria-selected",
+          String(active)
+        );
+      });
+
+      panels.forEach((panel) => {
+        panel.hidden =
+          panel.dataset.wirePanel !== mode;
+      });
+    };
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        setMode(
+          tab.dataset.wireMode || "custom"
+        );
+      });
+    });
+
+    root
+      .querySelector('[role="tablist"]')
+      ?.addEventListener(
+        "keydown",
+        (event) => {
+          if (
+            !(event instanceof KeyboardEvent)
+          ) {
+            return;
+          }
+
+          if (
+            event.key !== "ArrowRight" &&
+            event.key !== "ArrowLeft"
+          ) {
+            return;
+          }
+
+          event.preventDefault();
+
+          const current =
+            tabs.findIndex(
+              (tab) =>
+                tab.getAttribute(
+                  "aria-selected"
+                ) === "true"
+            );
+
+          const offset =
+            event.key === "ArrowRight"
+              ? 1
+              : tabs.length - 1;
+
+          const next =
+            tabs[
+              (current + offset) %
+                tabs.length
+            ];
+
+          setMode(
+            next.dataset.wireMode ||
+              "custom"
+          );
+
+          next.focus();
+        }
+      );
+
+    book?.addEventListener(
+      "click",
+      () => {
+        if (!selectedPackage) return;
+
+        const open =
+          (window as BookingWindow)
+            .openPackageBooking;
+
+        if (
+          typeof open !== "function"
+        ) {
+          return;
+        }
+
+        open({
+          packageId:
+            selectedPackage.packageId,
+          category:
+            selectedPackage.name,
+          priceLabel:
+            money(
+              selectedPackage.priceCents
+            ),
+          description:
+            selectedPackage.description
+        });
+      }
+    );
+
+    fetch("/api/calculator-pricing", {
+      headers: {
+        accept: "application/json"
+      }
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            "pricing_unavailable"
+          );
+        }
+
+        return response.json();
+      })
+      .then((pricing) => {
+        const parts = [
+          pricing.base?.standard_tv,
+          pricing.items?.[
+            "standard_tv.tv_size.up_to_50"
+          ],
+          pricing.items?.[
+            "standard_tv.wire.cord_cover"
+          ]
+        ];
+
+        if (
+          !parts.every(
+            (value) =>
+              typeof value === "number"
+          )
+        ) {
+          throw new Error(
+            "custom_price_unavailable"
+          );
+        }
+
+        const total =
+          parts.reduce(
+            (sum, value) =>
+              sum + Number(value),
+            0
+          );
+
+        if (customPrice) {
+          customPrice.textContent =
+            `$${Math.round(total)}`;
+        }
+      })
+      .catch(() => {});
+
+    fetch("/api/packages", {
+      headers: {
+        accept: "application/json"
+      }
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            "packages_unavailable"
+          );
+        }
+
+        return response.json();
+      })
+      .then((data) => {
+        if (
+          !Array.isArray(data?.packages)
+        ) {
+          throw new Error(
+            "invalid_packages"
+          );
+        }
+
+        const pkg =
+          data.packages.find(
+            (item: PublicPackage) =>
+              item.packageId ===
+              "NL-PKG-UNTITLED-PACKAGE-IUXK"
+          );
+
+        if (
+          !pkg ||
+          typeof pkg.priceCents !==
+            "number"
+        ) {
+          throw new Error(
+            "power_package_unavailable"
+          );
+        }
+
+        selectedPackage = pkg;
+
+        if (packagePrice) {
+          packagePrice.textContent =
+            money(pkg.priceCents);
+        }
+
+        if (packageDescription) {
+          packageDescription.textContent =
+            pkg.description;
+        }
+
+        if (packageChip) {
+          packageChip.textContent =
+            pkg.name;
+        }
+
+        if (book) {
+          book.disabled = false;
+        }
+      })
+      .catch(() => {
+        selectedPackage = null;
+
+        if (book) {
+          book.disabled = true;
+        }
+      });
+
+    fetch("/api/home-state", {
+      headers: {
+        accept: "application/json"
+      }
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            "home_state_unavailable"
+          );
+        }
+
+        return response.json();
+      })
+      .then((data) => {
+        if (!data?.ok) return;
+
+        const today =
+          document.querySelector<HTMLElement>(
+            '[data-avail="today"]'
+          );
+
+        const next =
+          document.querySelector<HTMLElement>(
+            '[data-avail="next"]'
+          );
+
+        const todayLabel =
+          data.availability?.today?.label;
+
+        const nextLabel =
+          data.availability?.next?.label;
+
+        if (
+          today &&
+          typeof todayLabel ===
+            "string" &&
+          todayLabel
+        ) {
+          today.textContent =
+            todayLabel;
+        }
+
+        if (
+          next &&
+          typeof nextLabel ===
+            "string" &&
+          nextLabel
+        ) {
+          next.textContent =
+            nextLabel;
+        }
+      })
+      .catch(() => {});
+
+    setMode("custom");
+  }
+</script>

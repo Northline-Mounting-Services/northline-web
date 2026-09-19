@@ -44,6 +44,7 @@
 
   <div class="nl-panel" data-large-panel="priced" hidden>
     <p class="nl-price">
+      <span class="nl-price__label">from</span>
       <span class="nl-price__value" data-large-price>&mdash;</span>
     </p>
 
@@ -156,10 +157,14 @@
 
         if (
           typeof largeTvPrice === "number" &&
+          typeof clientLift === "number" &&
           price
         ) {
+          const fromPrice =
+            largeTvPrice + clientLift;
+
           price.textContent =
-            `$${Math.round(largeTvPrice)}`;
+            `$${Math.round(fromPrice)}`;
         }
 
         if (
