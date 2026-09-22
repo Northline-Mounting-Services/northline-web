@@ -1,0 +1,160 @@
+---
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="index,follow" />
+  </head>
+
+  <body>
+    <Header />
+
+    <main class="policy-main">
+      <div class="policy-shell">
+        <slot />
+      </div>
+    </main>
+
+    <Footer />
+  </body>
+</html>
+
+<style is:global>
+  html,
+  body {
+    margin: 0;
+    min-height: 100%;
+    background: #1B1E1C;
+    color: #f4f4f1;
+  }
+
+  body {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  .policy-main {
+    min-height: 100vh;
+    background: #1B1E1C;
+  }
+
+  .policy-shell {
+    width: min(920px, calc(100% - 48px));
+    margin: 0 auto;
+    padding: 112px 0 140px;
+  }
+
+  .policy-kicker {
+    margin: 0 0 24px;
+    color: #9aa09c;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .policy-shell h1 {
+    max-width: 800px;
+    margin: 0 0 22px;
+    color: #ffffff;
+    font-size: clamp(42px, 7vw, 82px);
+    font-weight: 500;
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+  }
+
+  .policy-updated {
+    margin: 0 0 72px;
+    color: #858b87;
+    font-size: 14px;
+  }
+
+  .policy-content {
+    max-width: 760px;
+  }
+
+  .policy-content h2 {
+    margin: 64px 0 18px;
+    color: #ffffff;
+    font-size: clamp(23px, 3vw, 31px);
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+  }
+
+  .policy-content p,
+  .policy-content li {
+    color: #c9ccc9;
+    font-size: 17px;
+    line-height: 1.7;
+  }
+
+  .policy-content p {
+    margin: 0 0 18px;
+  }
+
+  .policy-content ul {
+    margin: 18px 0 24px;
+    padding-left: 22px;
+  }
+
+  .policy-content li {
+    margin: 7px 0;
+  }
+
+  .policy-content strong {
+    color: #ffffff;
+    font-weight: 600;
+  }
+
+  .policy-content a {
+    color: #ffffff;
+    text-decoration-color: #6f7571;
+    text-underline-offset: 4px;
+  }
+
+  .policy-content a:hover {
+    text-decoration-color: #ffffff;
+  }
+
+  @media (max-width: 700px) {
+    .policy-shell {
+      width: min(100% - 32px, 920px);
+      padding: 72px 0 96px;
+    }
+
+    .policy-updated {
+      margin-bottom: 52px;
+    }
+
+    .policy-content h2 {
+      margin-top: 48px;
+    }
+
+    .policy-content p,
+    .policy-content li {
+      font-size: 16px;
+    }
+  }
+</style>
