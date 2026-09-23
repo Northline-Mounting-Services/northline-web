@@ -189,6 +189,21 @@ Verify:
 - Recent Work cards and media load
 - no private/internal information is exposed
 
+## Performance / CLS
+
+Mobile performance was tested at 390 x 844 with Slow 4G and network cache disabled.
+
+Final local metrics after stabilization:
+
+- LCP: approximately 1.47 s
+- CLS: 0
+
+Intentional protections:
+- Service Area package is rendered immediately; its booking button stays disabled until `/api/packages` loads.
+- On mobile, Service Area review cards reserve `min-height: 234px` while `/api/google-reviews` loads.
+
+Do not remove these reservations without repeating the mobile Performance test.
+
 ## Deferred analytics
 
 Later configure:

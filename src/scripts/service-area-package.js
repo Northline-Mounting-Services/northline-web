@@ -103,8 +103,6 @@ if (root) {
         description.textContent =
           cleanDescription;
 
-        description.hidden =
-          false;
       }
 
       if (price) {
@@ -117,7 +115,9 @@ if (root) {
       root.dataset.packageId =
         pkg.packageId;
 
-      root.hidden = false;
+      if (book) {
+        book.disabled = false;
+      }
 
       root.setAttribute(
         'aria-busy',

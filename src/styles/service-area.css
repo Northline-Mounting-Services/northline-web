@@ -219,6 +219,7 @@
 
 .nl-sa-package__name {
   margin: 8px 0 0;
+  min-height: 25px;
 
   font-size: 19px;
   font-weight: 500;
@@ -228,6 +229,7 @@
 
 .nl-sa-package__description {
   margin: 6px 0 0;
+  min-height: 21px;
   max-width: 36em;
 
   color: #747875;
@@ -245,6 +247,8 @@
 
 .nl-sa-package__price {
   margin: 0;
+  min-width: 72px;
+  min-height: 28px;
   color: #536b64;
   font-size: 28px;
   font-weight: 500;
@@ -275,8 +279,13 @@
   white-space: nowrap;
 }
 
-.nl-sa-package__book:hover {
+.nl-sa-package__book:hover:not(:disabled) {
   background: #47594f;
+}
+
+.nl-sa-package__book:disabled {
+  cursor: default;
+  opacity: 0.55;
 }
 
 .nl-sa-package__book:focus-visible {
@@ -402,5 +411,12 @@
 @media (max-width: 760px) {
   .nl-sa-work {
     padding: 52px 0;
+  }
+}
+
+/* Reserve review height to prevent CLS while Google reviews load. */
+@media (max-width: 700px) {
+  .nl-service-area__shell > .nl-reviews .nl-record {
+    min-height: 234px;
   }
 }
