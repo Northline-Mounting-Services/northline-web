@@ -1,0 +1,59 @@
+---
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import HomeReviews from "../components/home/HomeReviews.astro";
+import WorkServiceArea from "../components/work/WorkServiceArea.astro";
+import ServiceAreaToday from "../components/service-area/ServiceAreaToday.astro";
+import ServiceAreaPackage from "../components/service-area/ServiceAreaPackage.astro";
+import ServiceAreaTrust from "../components/service-area/ServiceAreaTrust.astro";
+import ServiceAreaLinks from "../components/service-area/ServiceAreaLinks.astro";
+import "../styles/home-test.css";
+import "../styles/service-area.css";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>TV mounting service area in North Atlanta — Northline Mounting Services</title>
+    <meta
+      name="description"
+      content="Check Northline Mounting Services coverage across North Atlanta, including Cumming, North Fulton, Forsyth, Cobb, Cherokee, Gwinnett and nearby areas."
+    />
+  </head>
+  <body>
+    <Header />
+
+    <main class="nl-service-area">
+      <WorkServiceArea />
+      <ServiceAreaToday />
+      <ServiceAreaPackage />
+
+      <div class="nl-service-area__shell">
+        <ServiceAreaTrust />
+        <HomeReviews />
+
+        <div data-public-work-slot></div>
+      </div>
+
+      <ServiceAreaLinks />
+    </main>
+
+    <Footer />
+    <script src="../scripts/google-reviews.js"></script>
+  </body>
+</html>
+
+<style is:global>
+  html,
+  body {
+    margin: 0;
+    min-height: 100%;
+    background: #f2f2ef;
+  }
+
+  body {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+  }
+</style>

@@ -1,0 +1,16 @@
+---
+const facts = [
+  { label: "Warranty", fact: "5-year installation warranty" },
+  { label: "Insured", fact: "$1,000,000 liability coverage" },
+  { label: "Cleanup", fact: "Packaging removed — free" }
+];
+---
+
+<section class="nl-sa-trust" aria-label="Warranty, insurance and cleanup">
+  {facts.map((item) => (
+    <div class="nl-sa-trust__cell">
+      <p class="nl-sa-kicker">{item.label}</p>
+      <p class="nl-sa-trust__fact">{item.fact}</p>
+    </div>
+  ))}
+</section>

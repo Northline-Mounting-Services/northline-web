@@ -1,0 +1,406 @@
+.nl-service-area {
+  background: #f2f2ef;
+  color: #202321;
+}
+
+.nl-service-area__shell {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 5vw, 48px);
+}
+
+.nl-sa-today {
+  background: #f2f2ef;
+  color: #202321;
+  padding: 0 clamp(20px, 5vw, 48px) clamp(32px, 6vw, 72px);
+}
+
+.nl-sa-today__inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding-top: clamp(22px, 3vw, 30px);
+  border-top: 1px solid #dcddd8;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.nl-sa-today__title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+
+.nl-sa-today__copy {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: #747875;
+}
+
+.nl-sa-today__sms {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 22px;
+  border-radius: 3px;
+  background: #536b64;
+  color: #f6f6f3;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.nl-sa-today__sms:hover {
+  background: #47594f;
+}
+
+.nl-sa-today__sms:focus-visible {
+  outline: 2px solid #202321;
+  outline-offset: 2px;
+}
+
+.nl-sa-kicker {
+  margin: 0;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #747875;
+}
+
+.nl-sa-trust {
+  margin-top: clamp(28px, 6vw, 40px);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid #dcddd8;
+  border-bottom: 1px solid #dcddd8;
+}
+
+.nl-sa-trust__cell {
+  padding: 18px 24px;
+  display: grid;
+  gap: 5px;
+  align-content: start;
+}
+
+.nl-sa-trust__cell:first-child {
+  padding-left: 0;
+}
+
+.nl-sa-trust__cell + .nl-sa-trust__cell {
+  border-left: 1px solid #dcddd8;
+}
+
+.nl-sa-trust__fact {
+  margin: 0;
+  font-size: 15.5px;
+  line-height: 1.35;
+  text-wrap: pretty;
+}
+
+.nl-service-area__shell > .nl-reviews {
+  margin-top: clamp(30px, 7vw, 42px);
+  padding-bottom: clamp(32px, 6vw, 72px);
+}
+
+.nl-sa-links {
+  background: #f2f2ef;
+  color: #202321;
+  padding: clamp(24px, 4vw, 36px) clamp(20px, 5vw, 48px) clamp(32px, 6vw, 56px);
+}
+
+.nl-sa-links__inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding-top: 20px;
+  border-top: 1px solid #dcddd8;
+}
+
+.nl-sa-links__list {
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 28px;
+}
+
+.nl-sa-links__list a {
+  font-size: 14.5px;
+  color: #202321;
+  text-decoration: none;
+}
+
+.nl-sa-links__list a:hover {
+  color: #536b64;
+}
+
+.nl-sa-links__list a:focus-visible {
+  outline: 2px solid #536b64;
+  outline-offset: 3px;
+}
+
+@media (max-width: 700px) {
+  .nl-sa-trust {
+    grid-template-columns: 1fr;
+  }
+
+  .nl-sa-trust__cell,
+  .nl-sa-trust__cell:first-child {
+    padding: 16px 0;
+  }
+
+  .nl-sa-trust__cell + .nl-sa-trust__cell {
+    border-left: 0;
+    border-top: 1px solid #dcddd8;
+  }
+
+  .nl-sa-today__sms {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nl-sa-today__sms {
+    transition: none;
+  }
+}
+
+
+/* Service Area Package */
+
+.nl-sa-package {
+  background: #f2f2ef;
+  color: #202321;
+  padding:
+    0
+    clamp(20px, 5vw, 48px)
+    clamp(32px, 6vw, 72px);
+}
+
+.nl-sa-package__inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding-top:
+    clamp(22px, 3vw, 30px);
+
+  border-top:
+    1px solid #dcddd8;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.nl-sa-package__copy {
+  min-width: 0;
+}
+
+.nl-sa-package__eyebrow {
+  margin: 0;
+
+  color: #747875;
+
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.nl-sa-package__name {
+  margin: 8px 0 0;
+
+  font-size: 19px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+
+.nl-sa-package__description {
+  margin: 6px 0 0;
+  max-width: 36em;
+
+  color: #747875;
+
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.nl-sa-package__offer {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.nl-sa-package__price {
+  margin: 0;
+  color: #536b64;
+  font-size: 28px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.nl-sa-package__book {
+  min-height: 52px;
+  padding: 0 22px;
+
+  border: 0;
+  border-radius: 3px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  background: #536b64;
+  color: #f6f6f3;
+
+  font: inherit;
+  font-size: 16px;
+  font-weight: 500;
+
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.nl-sa-package__book:hover {
+  background: #47594f;
+}
+
+.nl-sa-package__book:focus-visible {
+  outline: 2px solid #536b64;
+  outline-offset: 3px;
+}
+
+@media (max-width: 700px) {
+  .nl-sa-package__inner {
+    align-items: stretch;
+  }
+
+  .nl-sa-package__copy,
+  .nl-sa-package__offer {
+    width: 100%;
+  }
+}
+
+/* Recent Work by Area */
+
+.nl-sa-work {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 72px 0;
+}
+
+.nl-sa-work__title {
+  margin: 0;
+  color: #747875;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.nl-sa-work__areas {
+  display: block;
+}
+
+.nl-sa-work__area {
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid #dcddd8;
+}
+
+.nl-sa-work__area-name {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 19px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+}
+
+.nl-sa-work__area-index {
+  flex: 0 0 auto;
+  color: #747875;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  font-variant-numeric: tabular-nums;
+}
+
+.nl-sa-work__cities {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns:
+    repeat(
+      auto-fill,
+      minmax(220px, 1fr)
+    );
+  gap: 16px;
+}
+
+.nl-sa-work__city {
+  min-width: 0;
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+
+.nl-sa-work__city-name {
+  margin: 0;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.nl-sa-work__media {
+  width: 100%;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  background: #e7e8e4;
+  border-radius: 3px;
+}
+
+.nl-sa-work__media img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.nl-sa-work__description {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+.nl-sa-work__age {
+  margin: 0;
+  color: #9a9d99;
+  font-size: 11.5px;
+  line-height: 1.4;
+}
+
+@media (max-width: 760px) {
+  .nl-sa-work {
+    padding: 52px 0;
+  }
+}

@@ -9,6 +9,10 @@ import {
 import {
   isAllowedPackageBookingId,
 } from './data/package-booking-catalog';
+import {
+  servePublicWorkMedia,
+  serveServiceArea,
+} from './lib/service-area/public-work';
 
 interface AssetFetcher {
   fetch(request: Request): Promise<Response>;
@@ -1805,6 +1809,19 @@ export default {
       });
     }
 
+    if (
+      request.method === 'GET' &&
+      url.pathname.startsWith(
+        '/api/work/media/',
+      )
+    ) {
+      return servePublicWorkMedia(
+        request,
+        env,
+        url.pathname,
+      );
+    }
+
     if (url.pathname.startsWith('/api/')) {
       return jsonResponse(
         {
@@ -1812,6 +1829,24 @@ export default {
           error: 'Not found',
         },
         404,
+      );
+    }
+
+
+    if (
+      request.method === 'GET' &&
+      (
+        url.pathname ===
+          '/service-area' ||
+        url.pathname ===
+          '/service-area/' ||
+        url.pathname ===
+          '/service-area/index.html'
+      )
+    ) {
+      return serveServiceArea(
+        request,
+        env,
       );
     }
 

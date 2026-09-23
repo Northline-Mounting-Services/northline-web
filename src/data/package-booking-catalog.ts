@@ -25,6 +25,9 @@ export const PACKAGE_BOOKING_IDS = [
 
   // Wire concealment
   'NL-PKG-UNTITLED-PACKAGE-IUXK',
+
+  // Service Area
+  'NL-PKG-UNTITLED-PACKAGE-GNIC',
 ] as const;
 
 export type PackageBookingId =

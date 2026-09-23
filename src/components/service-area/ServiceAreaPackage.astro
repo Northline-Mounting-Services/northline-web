@@ -1,0 +1,45 @@
+<section
+  class="nl-sa-package"
+  aria-labelledby="nl-sa-package-heading"
+  aria-busy="true"
+  data-sa-package
+  hidden
+>
+  <div class="nl-sa-package__inner">
+    <div class="nl-sa-package__copy">
+      <p class="nl-sa-package__eyebrow">Package</p>
+
+      <h2
+        class="nl-sa-package__name"
+        id="nl-sa-package-heading"
+        data-sa-package-name
+      ></h2>
+
+      <p
+        class="nl-sa-package__description"
+        data-sa-package-description
+        hidden
+      ></p>
+    </div>
+
+    <div class="nl-sa-package__offer">
+      <p
+        class="nl-sa-package__price"
+        data-sa-package-price
+      ></p>
+
+      <button
+        class="nl-sa-package__book"
+        type="button"
+        data-sa-package-book
+      >
+        <span>Book installation</span>
+        <span aria-hidden="true">&rarr;</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+  import "../../scripts/service-area-package.js";
+</script>

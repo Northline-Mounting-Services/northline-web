@@ -1,0 +1,64 @@
+---
+const smsText =
+  "Hi, I need a TV mounted today. Any chance you'll be nearby today?";
+
+const smsHref =
+  `sms://+14704709331;?&body=${encodeURIComponent(smsText)}`;
+---
+
+<section
+  class="nl-sa-today"
+  aria-label="Same-day installation"
+>
+  <div class="nl-sa-today__inner">
+    <div>
+      <h2 class="nl-sa-today__title">
+        Need it mounted today?
+      </h2>
+
+      <p class="nl-sa-today__copy">
+        We sometimes drive it.
+      </p>
+    </div>
+
+    <a
+      class="nl-sa-today__sms"
+      href={smsHref}
+      data-same-day-sms
+    >
+      <span>Send SMS</span>
+      <span aria-hidden="true">&rarr;</span>
+    </a>
+  </div>
+</section>
+
+<script>
+  type TrackingWindow =
+    Window & {
+      dataLayer?: Array<
+        Record<string, unknown>
+      >;
+    };
+
+  const smsButton =
+    document.querySelector(
+      '[data-same-day-sms]',
+    );
+
+  smsButton?.addEventListener(
+    'click',
+    () => {
+      const trackingWindow =
+        window as TrackingWindow;
+
+      trackingWindow.dataLayer ??= [];
+
+      trackingWindow.dataLayer.push({
+        event:
+          'same_day_sms_click',
+        cta_location:
+          'service_area_same_day',
+      });
+    },
+  );
+</script>

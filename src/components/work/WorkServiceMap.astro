@@ -1,0 +1,80 @@
+---
+/**
+ * Lightweight schematic service-area diagram. No map provider, tiles,
+ * geocoding or GPS coordinates are involved.
+ */
+import { ROUTES, CORRIDORS, HUB, routePath } from '../../data/work-routes.js';
+---
+
+<div class="nl-map">
+  <svg
+    class="nl-map__svg"
+    viewBox="0 0 1000 780"
+    role="img"
+    aria-label="Map of seven service areas around Cumming, Georgia"
+  >
+    <g aria-hidden="true">
+      {CORRIDORS.map((corridor) => <path class="nl-map__corridor" d={corridor.d} />)}
+      {
+        CORRIDORS.map((corridor) => (
+          <text class="nl-map__corridor-label" dy="-6">
+            <textPath href={`#nl-corridor-${corridor.label}`} startOffset="26%">
+              {corridor.label}
+            </textPath>
+          </text>
+        ))
+      }
+      <defs>
+        {CORRIDORS.map((corridor) => <path id={`nl-corridor-${corridor.label}`} d={corridor.d} />)}
+      </defs>
+      {ROUTES.map((route) => <path class="nl-map__route" data-route={route.id} d={routePath(route)} />)}
+    </g>
+
+    <g class="nl-map__nodes">
+      {
+        ROUTES.map((route) =>
+          route.cities
+            .filter((city) => city.name !== HUB.name)
+            .map((city) => (
+              <circle
+                class="nl-map__node"
+                data-node-route={route.id}
+                data-node-city={city.name}
+                cx={city.x}
+                cy={city.y}
+                r="7"
+                aria-hidden="true"
+              />
+            )),
+        )
+      }
+      <circle class="nl-map__hub-ring" cx={HUB.x} cy={HUB.y} r="17" aria-hidden="true" />
+      <circle class="nl-map__hub" cx={HUB.x} cy={HUB.y} r="9" aria-hidden="true" />
+      <text class="nl-map__hub-label" x={HUB.x} y={HUB.y - 28} text-anchor="middle">CUMMING</text>
+    </g>
+  </svg>
+
+  <ul class="nl-map__cities">
+    {
+      ROUTES.map((route) =>
+        route.cities.map((city) => (
+          <li
+            class="nl-map__city"
+            data-city-route={route.id}
+            style={`--x:${(city.x / 1000) * 100}%;--y:${(city.y / 780) * 100}%`}
+          >
+            <button
+              type="button"
+              class="nl-map__city-btn"
+              aria-pressed="false"
+              data-city={city.name}
+              data-city-route={route.id}
+            >
+              {city.name}
+            </button>
+          </li>
+        )),
+      )
+    }
+  </ul>
+</div>

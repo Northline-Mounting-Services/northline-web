@@ -1,0 +1,19 @@
+---
+/** Area selector: 01–07 + area name only. */
+import { ROUTES } from '../../data/work-routes.js';
+---
+
+<ul class="nl-routes" role="list">
+  {
+    ROUTES.map((route) => (
+      <li class="nl-routes__item" data-route-row={route.id}>
+        <button type="button" class="nl-routes__btn" aria-pressed="false" data-route={route.id}>
+          <span class="nl-routes__index">{route.index}</span>
+          <span class="nl-routes__body">
+            <span class="nl-routes__label">{route.label}</span>
+          </span>
+        </button>
+      </li>
+    ))
+  }
+</ul>

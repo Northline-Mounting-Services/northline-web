@@ -1,0 +1,18 @@
+---
+const links = [
+  { label: "Fireplace TV mounting", href: "/tv-mounting/above-fireplace" },
+  { label: "Samsung Frame installation", href: "/tv-mounting/samsung-frame" },
+  { label: "TV mounting pricing", href: "/tv-mounting" }
+];
+---
+
+<nav class="nl-sa-links" aria-label="Explore more">
+  <div class="nl-sa-links__inner">
+    <p class="nl-sa-kicker">Explore more</p>
+    <ul class="nl-sa-links__list">
+      {links.map((item) => (
+        <li><a href={item.href}>{item.label}</a></li>
+      ))}
+    </ul>
+  </div>
+</nav>

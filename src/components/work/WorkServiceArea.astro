@@ -1,0 +1,50 @@
+---
+/**
+ * Service Area coverage block: heading, ZIP check, schematic map and area
+ * selector. Coverage only; Recent Work by Area remains a separate section.
+ */
+import WorkServiceMap from './WorkServiceMap.astro';
+import WorkRouteSelector from './WorkRouteSelector.astro';
+import '../../styles/work-service-map.css';
+---
+
+<section class="nl-work-section" data-work-section aria-labelledby="nl-work-title">
+  <div class="nl-work-section__shell">
+    <div class="nl-work-section__head">
+      <div>
+        <p class="nl-eyebrow">Service area</p>
+        <h1 class="nl-work-section__title" id="nl-work-title">TV mounting across North Atlanta</h1>
+        <p class="nl-work-section__lede">Check your ZIP or choose an area. Based in Cumming.</p>
+      </div>
+    </div>
+
+    <form class="nl-zip" role="search" aria-label="Check your ZIP code" data-zip-form>
+      <label class="nl-zip__label" for="nl-zip-input">Check your ZIP code</label>
+      <div class="nl-zip__row">
+        <input
+          class="nl-zip__input"
+          id="nl-zip-input"
+          type="text"
+          inputmode="numeric"
+          pattern="[0-9]{5}"
+          maxlength="5"
+          placeholder="e.g. 30040"
+          name="zip"
+          autocomplete="postal-code"
+        />
+        <button type="submit" class="nl-zip__submit">Check ZIP</button>
+      </div>
+      <p class="nl-zip__result" data-zip-result role="status" hidden></p>
+    </form>
+
+    <div class="nl-work-section__grid">
+      <WorkServiceMap />
+      <WorkRouteSelector />
+    </div>
+  </div>
+</section>
+
+<script>
+  import '../../scripts/work-service-map.js';
+  import '../../scripts/work-zip-check.js';
+</script>
