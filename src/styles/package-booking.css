@@ -22,10 +22,16 @@
 @media (max-width: 899px) {
   .nl-pkg .nl-rail {
     display: flex;
+    flex: 0 0 auto;
+    overflow: visible;
     border-left: 0;
     border-top: 1px solid #dcddd8;
   }
-  .nl-pkg .nl-rail__list { overflow: visible; }
+  .nl-pkg .nl-rail__list {
+    flex: 0 0 auto;
+    min-height: auto;
+    overflow: visible;
+  }
   .nl-pkg .nl-calc__body { grid-template-rows: auto auto; overflow-y: auto; }
   .nl-pkg .nl-calc__main { overflow: visible; }
   .nl-pkg__fields { grid-template-columns: minmax(0, 1fr); }
